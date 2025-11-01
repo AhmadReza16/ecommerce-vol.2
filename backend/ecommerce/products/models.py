@@ -27,3 +27,11 @@ class product(models.Model):
     
     def __str__(self):
         return self.name
+    
+
+@property
+def average_rating(self):
+    reviews = self.reviews.all()
+    if reviews.exists():
+        return round(sum(r.rating for r in reviews) / reviews.count(), 1)
+    return 0
