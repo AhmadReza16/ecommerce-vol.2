@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { ShoppingCart, LogOut, LogIn } from "react-icons/fa";
+import { FaShoppingCart, FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 
 const Header = () => {
-  const { user, logout, isAuthenticated } = useAuth();
-  const { cart } = useCart();
+  const { user, logout } = useAuth();
+  const { items: cartItems } = useCart();
+
+  const cartCount = Array.isArray(cartItems) ? cartItems.length : 0;
 
   return (
     <header className="bg-gray-900 text-white py-3 px-6 flex justify-between items-center shadow-md">
@@ -14,16 +16,16 @@ const Header = () => {
       </Link>
 
       <nav className="flex items-center gap-4">
-        {isAuthenticated ? (
+        {user ? (
           <>
             <span className="text-sm text-gray-300">
-              خوش آمدی، {user?.username}
+              خوش آمدی، {user.username}
             </span>
             <button
               onClick={logout}
               className="flex items-center gap-1 bg-red-600 px-3 py-1 rounded-md hover:bg-red-700 transition"
             >
-              <LogOut /> خروج
+              <FaSignOutAlt /> خروج
             </button>
           </>
         ) : (
@@ -32,7 +34,7 @@ const Header = () => {
               to="/login"
               className="hover:text-indigo-400 flex items-center gap-1"
             >
-              <LogIn /> ورود
+              <FaSignInAlt /> ورود
             </Link>
             <Link to="/register" className="hover:text-indigo-400">
               ثبت‌نام
@@ -44,10 +46,10 @@ const Header = () => {
           to="/cart"
           className="relative flex items-center hover:text-indigo-400"
         >
-          <ShoppingCart size={22} />
-          {cart?.items?.length > 0 && (
+          <FaShoppingCart size={20} />
+          {cartCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-xs w-5 h-5 flex justify-center items-center rounded-full">
-              {cart.items.length}
+              {cartCount}
             </span>
           )}
         </Link>

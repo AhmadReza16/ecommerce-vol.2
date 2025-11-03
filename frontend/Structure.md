@@ -48,15 +48,12 @@ ecommerce-frontend/
 │ ├── routes/ # مسیرها و تنظیمات React Router
 │ │ └── AppRouter.jsx
 │ │
-│ ├── styles/ # فایل‌های استایل یا تنظیمات Tailwind
-│ │ ├── index.css
-│ │ └── tailwind.css
 │ │
+│ │
+│ ├── index.css
 │ ├── App.jsx # ریشه اصلی اپ
 │ ├── main.jsx # نقطه ورود به React (Vite)
 │ └── index.html # فایل HTML اصلی (برای Vite)
 │
 ├── package.json
-├── tailwind.config.js
-├── postcss.config.js
 └── vite.config.js

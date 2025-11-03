@@ -4,6 +4,9 @@ import ProductDetail from "../pages/ProductDetail";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Success from "../pages/Success";
+import Profile from "../pages/Profile";
+import Order from "../pages/order";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 const AppRouter = () => {
   return (
@@ -13,6 +16,10 @@ const AppRouter = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/success" element={<Success />} />
+      <Route path="/profile" element={<ProtectedRoute />}>
+        <Route path="" element={<Profile />} />
+      </Route>
+      <Route path="/orders/:id" element={<Order />} />
     </Routes>
   );
 };

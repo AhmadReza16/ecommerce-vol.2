@@ -1,77 +1,88 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import authApi from "../api/authApi";
 import axiosClient from "../api/axiosClient";
-import { toast } from "react-toastify";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(true);
 
-  // گرفتن اطلاعات کاربر وقتی لاگین هست
+  // در صورتی که توکن داشته باشیم، پروفایل رو می‌گیریم
   useEffect(() => {
-    if (token) {
-      axiosClient
-        .get("users/me/")
-        .then((res) => setUser(res.data))
-        .catch(() => logout());
-    }
-    setLoading(false);
-  }, [token]);
+    const init = async () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+      try {
+        // axiosClient خودش header رو از localStorage می‌خواند (interceptor)
+        const res = await authApi.getProfile();
+        setUser(res.data);
+      } catch (err) {
+        // توکن باطل / خطا -> پاک میکنیم
+        localStorage.removeItem("access_token");
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
+  }, []);
 
-  // ثبت‌نام کاربر
-  const register = async (data) => {
+  const login = async (credentials) => {
+    // credentials: {email/username, password}
+    const res = await authApi.login(credentials);
+    // انتظار داریم سرور access token را در res.data.access برگرداند
+    const token = res?.data?.access || res?.data?.token || null;
+    if (!token) throw new Error("No access token returned from server");
+    localStorage.setItem("access_token", token);
+    // force axiosClient interceptor to use new token (it reads localStorage on each request)
     try {
-      const res = await axiosClient.post("users/register/", data);
-      toast.success("ثبت‌نام موفق!");
-      return res.data;
+      const profile = await authApi.getProfile();
+      setUser(profile.data);
+      return profile.data;
     } catch (err) {
-      toast.error("خطا در ثبت‌نام");
+      setUser(null);
       throw err;
     }
   };
 
-  // ورود
-  const login = async (data) => {
+  const register = async (data) => {
+    // data: {username, email, password, ...}
+    return authApi.register(data);
+  };
+
+  const logout = async () => {
     try {
-      const res = await axiosClient.post("users/login/", data);
-      setToken(res.data.access);
-      localStorage.setItem("token", res.data.access);
-      await fetchUser();
-      toast.success("با موفقیت وارد شدید");
-    } catch {
-      toast.error("ایمیل یا رمز اشتباه است");
+      await authApi.logout();
+    } catch (err) {
+      // ignore server logout errors
+    } finally {
+      localStorage.removeItem("access_token");
+      setUser(null);
     }
   };
 
-  // گرفتن اطلاعات کاربر بعد از لاگین
-  const fetchUser = async () => {
-    const res = await axiosClient.get("users/me/");
-    setUser(res.data);
-  };
-
-  // خروج
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("token");
-    toast.info("از حساب خارج شدید");
+  const refreshToken = async () => {
+    try {
+      const refreshToken = localStorage.getItem("refreshToken");
+      const res = await axiosClient.post("users/token/refresh/", {
+        refresh: refreshToken,
+      });
+      setToken(res.data.access);
+      localStorage.setItem("token", res.data.access);
+    } catch {
+      logout();
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        token,
-        login,
-        logout,
-        register,
-        loading,
-        isAuthenticated: !!token,
-      }}
+      value={{ user, loading, login, register, logout, refreshToken }}
     >
-      {children}
+      {!loading ? children : null}
     </AuthContext.Provider>
   );
 };
