@@ -1,59 +1,72 @@
 import { Link } from "react-router-dom";
+import { ShoppingCart, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { FaShoppingCart, FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 
 const Header = () => {
   const { user, logout } = useAuth();
-  const { items: cartItems } = useCart();
+  const { cart } = useCart();
 
-  const cartCount = Array.isArray(cartItems) ? cartItems.length : 0;
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <header className="bg-gray-900 text-white py-3 px-6 flex justify-between items-center shadow-md">
-      <Link to="/" className="text-2xl font-bold text-indigo-400">
-        🛍️ MyShop
-      </Link>
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto flex items-center justify-between p-4">
+        {/* برند */}
+        <Link
+          to="/"
+          className="text-2xl font-bold text-indigo-600 hover:text-indigo-800 transition"
+        >
+          MyShop
+        </Link>
 
-      <nav className="flex items-center gap-4">
-        {user ? (
-          <>
-            <span className="text-sm text-gray-300">
-              خوش آمدی، {user.username}
-            </span>
+        {/* لینک‌ها */}
+        <nav className="flex items-center space-x-6">
+          <Link
+            to="/"
+            className="text-gray-600 hover:text-indigo-600 transition"
+          >
+            Home
+          </Link>
+          {user && (
+            <Link
+              to="/profile"
+              className="text-gray-600 hover:text-indigo-600 transition"
+            >
+              Profile
+            </Link>
+          )}
+          <Link
+            to="/cart"
+            className="relative text-gray-600 hover:text-indigo-600 transition"
+          >
+            <ShoppingCart className="inline-block" size={22} />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full px-2">
+                {totalItems}
+              </span>
+            )}
+          </Link>
+
+          {/* احراز هویت */}
+          {user ? (
             <button
               onClick={logout}
-              className="flex items-center gap-1 bg-red-600 px-3 py-1 rounded-md hover:bg-red-700 transition"
+              className="bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700 transition"
             >
-              <FaSignOutAlt /> خروج
+              Logout
             </button>
-          </>
-        ) : (
-          <>
+          ) : (
             <Link
               to="/login"
-              className="hover:text-indigo-400 flex items-center gap-1"
+              className="flex items-center space-x-1 bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700 transition"
             >
-              <FaSignInAlt /> ورود
+              <User size={18} />
+              <span>Login</span>
             </Link>
-            <Link to="/register" className="hover:text-indigo-400">
-              ثبت‌نام
-            </Link>
-          </>
-        )}
-
-        <Link
-          to="/cart"
-          className="relative flex items-center hover:text-indigo-400"
-        >
-          <FaShoppingCart size={20} />
-          {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-xs w-5 h-5 flex justify-center items-center rounded-full">
-              {cartCount}
-            </span>
           )}
-        </Link>
-      </nav>
+        </nav>
+      </div>
     </header>
   );
 };

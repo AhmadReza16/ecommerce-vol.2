@@ -4,36 +4,34 @@ import { useCart } from "../context/CartContext";
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
 
-  const img = product?.image || "/placeholder.png";
-  const price = product?.price ?? 0;
+  const handleAdd = () => {
+    addToCart(product, 1);
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow p-4 hover:shadow-lg transition">
-      <img
-        src={img}
-        alt={product?.name}
-        className="w-full h-48 object-cover rounded-xl"
-      />
-      <h3 className="text-lg font-semibold mt-3">{product?.name}</h3>
-      <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-        {product?.description}
-      </p>
-      <p className="font-bold text-indigo-600">{price} تومان</p>
+    <div className="border rounded-xl shadow-sm hover:shadow-md p-4 transition bg-white">
+      {/* تصویر محصول */}
+      <Link to={`/product/${product.id}`}>
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-48 object-cover rounded-lg mb-3"
+        />
+      </Link>
 
-      <div className="flex justify-between items-center mt-3">
-        <Link
-          to={`/product/${product?.id}`}
-          className="text-sm text-indigo-500 hover:underline"
-        >
-          جزئیات
-        </Link>
-        <button
-          onClick={() => addToCart(product?.id)}
-          className="bg-indigo-600 text-white text-sm px-3 py-1 rounded-lg hover:bg-indigo-700 transition"
-        >
-          افزودن به سبد
-        </button>
-      </div>
+      {/* اطلاعات */}
+      <h3 className="text-lg font-semibold text-gray-800 mb-1">
+        {product.name}
+      </h3>
+      <p className="text-indigo-600 font-bold mb-3">${product.price}</p>
+
+      {/* دکمه */}
+      <button
+        onClick={handleAdd}
+        className="bg-indigo-600 text-white w-full py-2 rounded-lg hover:bg-indigo-700 transition"
+      >
+        Add to Cart
+      </button>
     </div>
   );
 };

@@ -1,154 +1,96 @@
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
-import Header from "../components/Header";
-import axiosClient from "../api/axiosClient";
+import orderApi from "../api/orderApi";
+import paymentApi from "../api/paymentApi";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
-  const { cart, getTotalPrice, clearCart } = useCart();
+  const { cart, total, clearCart } = useCart();
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    fullName: "",
-    address: "",
-    phone: "",
-    paymentMethod: "card",
-  });
-
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.fullName || !formData.address || !formData.phone) {
-      alert("لطفاً تمام فیلدها را پر کنید.");
-      return;
-    }
-
+  const handlePayment = async () => {
     setLoading(true);
+    setError("");
     try {
-      // ارسال داده به بک‌اند (order + payment)
-      await axiosClient.post("orders/create/", {
-        ...formData,
-        total_price: getTotalPrice(),
+      // 1️⃣ ایجاد سفارش
+      const orderRes = await orderApi.create({
         items: cart.map((item) => ({
-          product: item.id,
+          product: item.product.id,
           quantity: item.quantity,
         })),
+        total_price: total,
       });
 
-      clearCart();
-      navigate("/success");
+      // 2️⃣ انجام پرداخت
+      const paymentRes = await paymentApi.pay(orderRes.data.id, total);
+
+      // 3️⃣ فرض کنیم سرور URL پرداخت واقعی برمی‌گرداند
+      const paymentUrl = paymentRes.data?.payment_url;
+      if (paymentUrl) {
+        clearCart(); // سبد رو خالی می‌کنیم
+        window.location.href = paymentUrl; // هدایت به صفحه پرداخت
+      } else {
+        throw new Error("Payment URL not returned");
+      }
     } catch (err) {
       console.error(err);
-      alert("خطا در پرداخت! لطفاً دوباره تلاش کنید.");
+      setError("خطا در پرداخت. دوباره تلاش کنید.");
     } finally {
       setLoading(false);
     }
   };
 
+  if (cart.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          سبد خرید شما خالی است 🛒
+        </h2>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <Header />
-      <div className="bg-gray-50 min-h-[85vh] py-10">
-        <div className="max-w-5xl mx-auto bg-white p-6 shadow-lg rounded-2xl">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-            🧾 پرداخت و نهایی‌سازی سفارش
-          </h2>
+    <div className="container mx-auto px-4 py-8">
+      <h2 className="text-2xl font-bold mb-6">Checkout</h2>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* فرم پرداخت */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block mb-1 text-gray-600">
-                  نام و نام خانوادگی
-                </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1 text-gray-600">آدرس</label>
-                <textarea
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
-                  rows="2"
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1 text-gray-600">شماره تماس</label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1 text-gray-600">روش پرداخت</label>
-                <select
-                  name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
-                >
-                  <option value="card">کارت بانکی</option>
-                  <option value="cod">پرداخت در محل</option>
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold"
-              >
-                {loading ? "در حال پردازش..." : "پرداخت و ثبت سفارش"}
-              </button>
-            </form>
-
-            {/* خلاصه سفارش */}
-            <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
-              <h3 className="text-lg font-bold mb-4">خلاصه سفارش</h3>
-              {cart.length === 0 ? (
-                <p className="text-gray-500">سبد خرید شما خالی است.</p>
-              ) : (
-                <>
-                  <ul className="divide-y divide-gray-200">
-                    {cart.map((item) => (
-                      <li key={item.id} className="py-2 flex justify-between">
-                        <span>
-                          {item.name} × {item.quantity}
-                        </span>
-                        <span>{item.price * item.quantity} تومان</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-4 flex justify-between font-bold text-gray-800">
-                    <span>جمع کل:</span>
-                    <span>{getTotalPrice()} تومان</span>
-                  </div>
-                </>
-              )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* لیست آیتم‌ها */}
+        <div className="space-y-4">
+          {cart.map((item) => (
+            <div key={item.id} className="flex justify-between border-b py-2">
+              <span>
+                {item.product.name} x {item.quantity}
+              </span>
+              <span>${(item.product.price * item.quantity).toFixed(2)}</span>
             </div>
-          </div>
+          ))}
+        </div>
+
+        {/* خلاصه پرداخت */}
+        <div className="border p-4 rounded-lg bg-white">
+          <h3 className="font-semibold mb-4">Order Summary</h3>
+          <p className="mb-4">
+            Total:{" "}
+            <span className="font-bold text-indigo-600">
+              ${total.toFixed(2)}
+            </span>
+          </p>
+
+          {error && <p className="text-red-500 mb-2">{error}</p>}
+
+          <button
+            onClick={handlePayment}
+            disabled={loading}
+            className="bg-indigo-600 text-white w-full py-2 rounded-lg hover:bg-indigo-700 transition"
+          >
+            {loading ? "Processing..." : "Pay Now"}
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
