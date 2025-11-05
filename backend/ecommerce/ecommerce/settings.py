@@ -29,16 +29,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
-    'product',
+    'products',
     'orders',
     'cart',
     'payment',
-    'revies',
-    'rest_framework'
-    'rest_framework_simplejwt'
+    'reviews',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.Account'
 
 
 REST_FRAMEWORK = {
