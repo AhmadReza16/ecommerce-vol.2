@@ -1,44 +1,47 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import authApi from "../api/authApi";
-import axiosClient from "../api/axiosClient";
+import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(true);
 
-  // در صورتی که توکن داشته باشیم، پروفایل رو می‌گیریم
+  // initialize: if token exists, fetch profile
   useEffect(() => {
     const init = async () => {
-      const token = localStorage.getItem("access_token");
       if (!token) {
         setLoading(false);
         return;
       }
       try {
-        // axiosClient خودش header رو از localStorage می‌خواند (interceptor)
         const res = await authApi.getProfile();
         setUser(res.data);
-      } catch (err) {
-        // توکن باطل / خطا -> پاک میکنیم
-        localStorage.removeItem("access_token");
+      } catch {
+        // invalid token -> cleanup
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
         setUser(null);
       } finally {
         setLoading(false);
       }
     };
     init();
-  }, []);
+  }, [token]);
 
   const login = async (credentials) => {
     // credentials: {email/username, password}
     const res = await authApi.login(credentials);
-    // انتظار داریم سرور access token را در res.data.access برگرداند
-    const token = res?.data?.access || res?.data?.token || null;
-    if (!token) throw new Error("No access token returned from server");
-    localStorage.setItem("access_token", token);
-    // force axiosClient interceptor to use new token (it reads localStorage on each request)
+    const access =
+      res?.data?.access || res?.data?.token || res?.data?.access_token || null;
+    const refresh = res?.data?.refresh || res?.data?.refresh_token || null;
+    if (!access) throw new Error("No access token returned from server");
+    localStorage.setItem("token", access);
+    if (refresh) localStorage.setItem("refresh_token", refresh);
+    setToken(access);
+    // fetch profile
     try {
       const profile = await authApi.getProfile();
       setUser(profile.data);
@@ -50,37 +53,56 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (data) => {
-    // data: {username, email, password, ...}
     return authApi.register(data);
   };
 
   const logout = async () => {
     try {
       await authApi.logout();
-    } catch (err) {
-      // ignore server logout errors
+    } catch {
+      // ignore
     } finally {
-      localStorage.removeItem("access_token");
+      localStorage.removeItem("token");
+      localStorage.removeItem("refresh_token");
+      setToken(null);
       setUser(null);
     }
   };
 
   const refreshToken = async () => {
+    const refresh = localStorage.getItem("refresh_token");
+    if (!refresh) return null;
     try {
-      const refreshToken = localStorage.getItem("refreshToken");
-      const res = await axiosClient.post("users/token/refresh/", {
-        refresh: refreshToken,
-      });
-      setToken(res.data.access);
-      localStorage.setItem("token", res.data.access);
-    } catch {
-      logout();
+      const resp = await axios.post(
+        "http://127.0.0.1:8000/api/users/token/refresh/",
+        { refresh }
+      );
+      const newAccess = resp?.data?.access || resp?.data?.token || null;
+      if (newAccess) {
+        localStorage.setItem("token", newAccess);
+        setToken(newAccess);
+        return newAccess;
+      }
+    } catch (err) {
+      // couldn't refresh -> logout
+      await logout();
+      return null;
     }
+    return null;
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout, refreshToken }}
+      value={{
+        user,
+        token,
+        loading,
+        login,
+        register,
+        logout,
+        refreshToken,
+        isAuthenticated: !!token,
+      }}
     >
       {!loading ? children : null}
     </AuthContext.Provider>

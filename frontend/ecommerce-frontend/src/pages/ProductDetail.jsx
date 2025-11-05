@@ -1,8 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axiosClient from "../api/axiosClient";
+import productApi from "../api/productApi";
+import reviewApi from "../api/reviewApi";
 import { useCart } from "../context/CartContext";
 import Header from "../components/Header";
+import ReviewList from "../components/ReviewList";
+import ReviewForm from "../components/ReviewForm";
 
 const ProductDetail = () => {
   const { id } = useParams(); // گرفتن id از URL
@@ -10,11 +13,31 @@ const ProductDetail = () => {
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState("");
   const { addToCart } = useCart();
+  const [loading, setLoading] = useState(true);
 
-  // گرفتن جزئیات محصول
+  // fetch product details and reviews
+  // fetch helper used on mount and after adding reviews
   useEffect(() => {
-    axiosClient.get(`products/${id}/`).then((res) => setProduct(res.data));
-    axiosClient.get(`reviews/${id}/`).then((res) => setReviews(res.data));
+    let mounted = true;
+    const fetchData = async () => {
+      try {
+        const [pRes, rRes] = await Promise.all([
+          productApi.getById(id),
+          reviewApi.getReviews(id),
+        ]);
+        if (!mounted) return;
+        setProduct(pRes.data);
+        setReviews(rRes.data || []);
+      } catch {
+        // ignore - will show product not found or empty reviews
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    fetchData();
+    return () => {
+      mounted = false;
+    };
   }, [id]);
 
   // ارسال نظر جدید
@@ -23,18 +46,20 @@ const ProductDetail = () => {
     if (!newReview.trim()) return;
 
     try {
-      const res = await axiosClient.post("reviews/create/", {
-        product: id,
-        text: newReview,
-      });
-      setReviews([res.data, ...reviews]);
+      const res = await reviewApi.addReview(id, { text: newReview });
+      setReviews((prev) => [res.data, ...prev]);
       setNewReview("");
     } catch {
       alert("خطا در ثبت نظر");
     }
   };
 
-  if (!product) return <p className="text-center mt-10">در حال بارگذاری...</p>;
+  if (loading)
+    return <p className="text-gray-600 text-center mt-10">Loading...</p>;
+  if (!product)
+    return (
+      <p className="text-gray-600 text-center mt-10">Product not found.</p>
+    );
 
   return (
     <>
@@ -106,6 +131,29 @@ const ProductDetail = () => {
             </ul>
           )}
         </section>
+
+        <div className="mt-10">
+          <ReviewList productId={product.id} />
+          <ReviewForm
+            productId={product.id}
+            onReviewAdded={async () => {
+              // re-fetch product and reviews after a new review
+              setLoading(true);
+              try {
+                const [pRes, rRes] = await Promise.all([
+                  productApi.getById(product.id),
+                  reviewApi.getReviews(product.id),
+                ]);
+                setProduct(pRes.data);
+                setReviews(rRes.data || []);
+              } catch {
+                // ignore
+              } finally {
+                setLoading(false);
+              }
+            }}
+          />
+        </div>
       </main>
     </>
   );
