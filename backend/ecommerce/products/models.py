@@ -12,8 +12,8 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
-class product(models.Model):
-    category = models.ForeignKey(Category , on_delete=models.CASCADE , related_name='product')
+class Product(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     description = models.TextField()
@@ -24,14 +24,13 @@ class product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return self.name
-    
 
-@property
-def average_rating(self):
-    reviews = self.reviews.all()
-    if reviews.exists():
-        return round(sum(r.rating for r in reviews) / reviews.count(), 1)
-    return 0
+    @property
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if reviews.exists():
+            return round(sum(r.rating for r in reviews) / reviews.count(), 1)
+        return 0
