@@ -1,5 +1,5 @@
 // src/components/CartItem.jsx
-import { Trash2 } from "lucide-react";
+import { FiTrash2 } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 
 const CartItem = ({ item }) => {
@@ -45,7 +45,7 @@ const CartItem = ({ item }) => {
           onClick={handleRemove}
           className="text-red-500 hover:text-red-700 transition"
         >
-          <Trash2 size={20} />
+          <FiTrash2 size={20} />
         </button>
       </div>
     </div>
