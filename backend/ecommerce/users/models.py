@@ -8,12 +8,6 @@ class Account(AbstractUser):
     username = models.CharField( max_length=50 , unique=True)
     email = models.EmailField(max_length=100 , unique=True)
 
-    # required fields
-
-    date_joined = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username' , 'first_name' , 'last_name']
