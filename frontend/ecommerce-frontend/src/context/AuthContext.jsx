@@ -13,16 +13,20 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const init = async () => {
       if (!token) {
+        setUser(null);
         setLoading(false);
         return;
       }
       try {
         const res = await authApi.getProfile();
         setUser(res.data);
-      } catch {
-        // invalid token -> cleanup
-        localStorage.removeItem("token");
-        localStorage.removeItem("refresh_token");
+      } catch (err) {
+        // Only clear tokens if it's an auth error
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("refresh_token");
+          setToken(null);
+        }
         setUser(null);
       } finally {
         setLoading(false);
