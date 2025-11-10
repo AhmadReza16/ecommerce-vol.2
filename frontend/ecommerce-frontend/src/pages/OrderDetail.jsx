@@ -15,7 +15,7 @@ const OrderDetail = () => {
         setOrder(res.data);
       } catch (err) {
         console.error(err);
-        setError("خطا در دریافت اطلاعات سفارش");
+        setError("Error fetching order data");
       } finally {
         setLoading(false);
       }
@@ -25,9 +25,7 @@ const OrderDetail = () => {
   }, [id]);
 
   if (loading) {
-    return (
-      <p className="text-center mt-10 text-gray-600">در حال بارگذاری...</p>
-    );
+    return <p className="text-center mt-10 text-gray-600">Loading...</p>;
   }
 
   if (error) {
@@ -35,7 +33,7 @@ const OrderDetail = () => {
   }
 
   if (!order) {
-    return <p className="text-center mt-10 text-gray-600">سفارشی یافت نشد.</p>;
+    return <p className="text-center mt-10 text-gray-600">Order not found.</p>;
   }
 
   return (

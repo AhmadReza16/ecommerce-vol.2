@@ -2,11 +2,9 @@ import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import orderApi from "../api/orderApi";
 import paymentApi from "../api/paymentApi";
-import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const { cart, total, clearCart } = useCart();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -36,7 +34,7 @@ const Checkout = () => {
       }
     } catch (err) {
       console.error(err);
-      setError("خطا در پرداخت. دوباره تلاش کنید.");
+      setError("Payment failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -46,7 +44,7 @@ const Checkout = () => {
     return (
       <div className="text-center py-20">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">
-          سبد خرید شما خالی است 🛒
+          Your cart is empty 🛒
         </h2>
       </div>
     );

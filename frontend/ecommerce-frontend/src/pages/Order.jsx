@@ -12,21 +12,21 @@ const Order = () => {
     axiosClient
       .get(`orders/${id}/`)
       .then((res) => setOrder(res.data))
-      .catch((err) => console.error("خطا در دریافت سفارش:", err))
+      .catch((err) => console.error("Error fetching order:", err))
       .finally(() => setLoading(false));
   }, [id]);
 
   if (loading)
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <p className="text-gray-500">در حال بارگذاری اطلاعات سفارش...</p>
+        <p className="text-gray-500">Loading order details...</p>
       </div>
     );
 
   if (!order)
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <p className="text-gray-500">سفارش پیدا نشد 😕</p>
+        <p className="text-gray-500">Order not found 😕</p>
       </div>
     );
 
@@ -38,9 +38,9 @@ const Order = () => {
           {/* اطلاعات کلی سفارش */}
           <div className="border-b pb-6 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-3">
-              🧾 جزئیات سفارش #{order.id}
+              🧾 Order Details #{order.id}
             </h2>
-            <p className="text-gray-600 mb-1">تاریخ: {order.created_at}</p>
+            <p className="text-gray-600 mb-1">Date: {order.created_at}</p>
             <p className="text-gray-600 mb-1">
               وضعیت:
               <span
@@ -53,10 +53,10 @@ const Order = () => {
                 }`}
               >
                 {order.status === "paid"
-                  ? "پرداخت شده"
+                  ? "Paid"
                   : order.status === "pending"
-                  ? "در انتظار پرداخت"
-                  : "لغو شده"}
+                  ? "Pending payment"
+                  : "Cancelled"}
               </span>
             </p>
             <p className="text-gray-600">روش پرداخت: {order.payment_method}</p>
@@ -82,7 +82,7 @@ const Order = () => {
                     <div>
                       <p className="font-semibold">{item.product.name}</p>
                       <p className="text-gray-500 text-sm">
-                        قیمت: {item.product.price} تومان
+                        Price: {item.product.price} IRR
                       </p>
                     </div>
                   </div>
@@ -97,10 +97,12 @@ const Order = () => {
           {/* جمع کل و آدرس */}
           <div className="mt-8 border-t pt-4 text-gray-800">
             <p className="text-lg font-semibold">
-              💰 جمع کل:{" "}
-              <span className="text-indigo-600">{order.total_price} تومان</span>
+              💰 Total:{" "}
+              <span className="text-indigo-600">{order.total_price} IRR</span>
             </p>
-            <p className="mt-3 text-gray-600">📦 آدرس ارسال: {order.address}</p>
+            <p className="mt-3 text-gray-600">
+              📦 Shipping address: {order.address}
+            </p>
           </div>
 
           {/* دکمه بازگشت */}
@@ -109,7 +111,7 @@ const Order = () => {
               to="/profile"
               className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition"
             >
-              بازگشت به سفارش‌ها
+              Back to Orders
             </Link>
           </div>
         </div>

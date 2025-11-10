@@ -25,10 +25,11 @@ const Success = () => {
           </div>
 
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            پرداخت با موفقیت انجام شد 🎉
+            Payment Successful 🎉
           </h2>
           <p className="text-gray-600 mb-6">
-            سفارش شما با موفقیت ثبت شد. از خرید شما سپاسگزاریم 💚
+            Your order has been placed successfully. Thank you for your purchase
+            💚
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -36,13 +37,13 @@ const Success = () => {
               to="/"
               className="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700 transition"
             >
-              بازگشت به صفحه اصلی
+              Back to Home
             </Link>
             <Link
-              to="/orders"
+              to="/profile"
               className="border border-gray-300 py-2 px-6 rounded-lg hover:bg-gray-100 transition"
             >
-              مشاهده سفارش‌ها
+              View Orders
             </Link>
           </div>
         </div>

@@ -39,10 +39,10 @@ const Register = () => {
           className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-sm"
         >
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-            ایجاد حساب جدید
+            Create a new account{" "}
           </h2>
 
-          <label className="block mb-2 text-gray-600">نام کاربری</label>
+          <label className="block mb-2 text-gray-600"> Username</label>
           <input
             type="text"
             name="username"
@@ -52,7 +52,7 @@ const Register = () => {
             className="w-full p-2 border rounded-md mb-4 focus:ring-2 focus:ring-indigo-400"
           />
 
-          <label className="block mb-2 text-gray-600">ایمیل</label>
+          <label className="block mb-2 text-gray-600"> Email </label>
           <input
             type="email"
             name="email"
@@ -62,7 +62,7 @@ const Register = () => {
             className="w-full p-2 border rounded-md mb-4 focus:ring-2 focus:ring-indigo-400"
           />
 
-          <label className="block mb-2 text-gray-600">رمز عبور</label>
+          <label className="block mb-2 text-gray-600"> Password</label>
           <input
             type="password"
             name="password"
@@ -77,13 +77,13 @@ const Register = () => {
             disabled={loading}
             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
           >
-            {loading ? "در حال ثبت‌نام..." : "ثبت‌نام"}
+            {loading ? "Registering..." : "Registration"}
           </button>
 
           <p className="text-center text-sm mt-4">
-            حساب داری؟{" "}
+            Do you have an account?{" "}
             <Link to="/login" className="text-indigo-600 hover:underline">
-              وارد شو
+              Login{" "}
             </Link>
           </p>
         </form>

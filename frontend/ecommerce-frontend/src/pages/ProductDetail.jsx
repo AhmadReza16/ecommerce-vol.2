@@ -9,7 +9,7 @@ import ReviewForm from "../components/ReviewForm";
 
 const ProductDetail = () => {
   const { id } = useParams(); // گرفتن id از URL
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState(null); // get id from URL
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState("");
   const { addToCart } = useCart();
@@ -40,7 +40,7 @@ const ProductDetail = () => {
     };
   }, [id]);
 
-  // ارسال نظر جدید
+  // submit a new review
   const handleAddReview = async (e) => {
     e.preventDefault();
     if (!newReview.trim()) return;
@@ -50,7 +50,7 @@ const ProductDetail = () => {
       setReviews((prev) => [res.data, ...prev]);
       setNewReview("");
     } catch {
-      alert("خطا در ثبت نظر");
+      alert("Error submitting review");
     }
   };
 
@@ -80,27 +80,27 @@ const ProductDetail = () => {
             <h1 className="text-3xl font-bold mb-3">{product.name}</h1>
             <p className="text-gray-600 mb-4">{product.description}</p>
             <p className="text-2xl font-semibold text-indigo-600 mb-4">
-              {product.price} تومان
+              {product.price} IRR
             </p>
 
             <button
               onClick={() => addToCart(product.id)}
               className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition"
             >
-              افزودن به سبد خرید 🛒
+              Add to Cart 🛒
             </button>
           </div>
         </div>
 
         {/* بخش نظرات */}
         <section className="mt-12">
-          <h2 className="text-2xl font-bold mb-4">نظرات کاربران 💬</h2>
+          <h2 className="text-2xl font-bold mb-4">User Reviews 💬</h2>
 
           <form onSubmit={handleAddReview} className="mb-6">
             <textarea
               value={newReview}
               onChange={(e) => setNewReview(e.target.value)}
-              placeholder="نظر خود را بنویسید..."
+              placeholder="Write your review..."
               className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               rows="3"
             />
@@ -108,12 +108,12 @@ const ProductDetail = () => {
               type="submit"
               className="mt-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
             >
-              ثبت نظر
+              Submit Review
             </button>
           </form>
 
           {reviews.length === 0 ? (
-            <p className="text-gray-500">هنوز نظری ثبت نشده 😐</p>
+            <p className="text-gray-500">No reviews yet 😐</p>
           ) : (
             <ul className="space-y-4">
               {reviews.map((r) => (
@@ -122,7 +122,7 @@ const ProductDetail = () => {
                   className="border-b border-gray-200 pb-3 text-gray-800"
                 >
                   <p className="font-semibold">
-                    {r.user?.username || "کاربر ناشناس"}
+                    {r.user?.username || "Anonymous user"}
                   </p>
                   <p className="text-sm">{r.text}</p>
                   <p className="text-xs text-gray-500 mt-1">{r.created_at}</p>

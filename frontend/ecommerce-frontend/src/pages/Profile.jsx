@@ -24,42 +24,45 @@ const Profile = () => {
           {/* بخش اطلاعات کاربر */}
           <div className="border-b pb-6 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-3">
-              👤 پروفایل کاربری
+              👤 User profile
             </h2>
             {user ? (
               <div className="space-y-2 text-gray-700">
                 <p>
-                  <span className="font-semibold">نام کاربری:</span>{" "}
+                  <span className="font-semibold"> Username: </span>{" "}
                   {user.username}
                 </p>
                 <p>
-                  <span className="font-semibold">ایمیل:</span> {user.email}
+                  <span className="font-semibold">Email:</span> {user.email}
                 </p>
               </div>
             ) : (
-              <p className="text-gray-500">لطفاً وارد حساب کاربری شوید.</p>
+              <p className="text-gray-500"> Please log in. </p>
             )}
           </div>
 
           {/* بخش لیست سفارش‌ها */}
           <div>
             <h3 className="text-xl font-bold mb-4 text-gray-800">
-              🧾 سفارش‌های من
+              🧾 My orders{" "}
             </h3>
 
             {loading ? (
-              <p className="text-gray-500">در حال بارگذاری سفارش‌ها...</p>
+              <p className="text-gray-500"> Loading orders... </p>
             ) : orders.length === 0 ? (
-              <p className="text-gray-500">شما هنوز سفارشی ثبت نکرده‌اید.</p>
+              <p className="text-gray-500">
+                {" "}
+                You have not placed an order yet.{" "}
+              </p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="min-w-full text-right">
                   <thead>
                     <tr className="border-b bg-gray-100 text-gray-700">
-                      <th className="py-3 px-2">کد سفارش</th>
-                      <th className="py-3 px-2">تاریخ</th>
-                      <th className="py-3 px-2">مبلغ کل</th>
-                      <th className="py-3 px-2">وضعیت</th>
+                      <th className="py-3 px-2">Order code </th>
+                      <th className="py-3 px-2">History</th>
+                      <th className="py-3 px-2"> Total amount</th>
+                      <th className="py-3 px-2">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -69,7 +72,7 @@ const Profile = () => {
                           #{order.id}
                         </td>
                         <td className="py-3 px-2">{order.created_at}</td>
-                        <td className="py-3 px-2">{order.total_price} تومان</td>
+                        <td className="py-3 px-2">{order.total_price} $</td>
                         <td className="py-3 px-2">
                           <span
                             className={`px-3 py-1 rounded-full text-sm ${
