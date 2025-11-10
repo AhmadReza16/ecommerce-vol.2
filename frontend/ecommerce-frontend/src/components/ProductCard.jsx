@@ -5,7 +5,8 @@ const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
 
   const handleAdd = () => {
-    addToCart(product, 1);
+    // pass product id to addToCart (backend expects product_id)
+    addToCart(product.id, 1);
   };
 
   return (
@@ -13,9 +14,15 @@ const ProductCard = ({ product }) => {
       {/* تصویر محصول */}
       <Link to={`/product/${product.id}`}>
         <img
-          src={product.image}
+          src={
+            product.image || "https://via.placeholder.com/400x300?text=No+Image"
+          }
           alt={product.name}
           className="w-full h-48 object-cover rounded-lg mb-3"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "https://via.placeholder.com/400x300?text=No+Image";
+          }}
         />
       </Link>
 

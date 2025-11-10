@@ -18,9 +18,9 @@ const Header = () => {
         {/* برند */}
         <Link
           to="/"
-          className="text-2xl font-bold text-indigo-600 hover:text-indigo-800 transition"
+          className="text-2xl font-bold text-gray-700 hover:text-gray-600 transition"
         >
-          MyShop
+          My Fake Shop
         </Link>
 
         {/* لینک‌ها */}
@@ -55,14 +55,14 @@ const Header = () => {
           {user ? (
             <button
               onClick={logout}
-              className="bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700 transition"
+              className="bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 transition"
             >
               Logout
             </button>
           ) : (
             <Link
               to="/login"
-              className="flex items-center space-x-1 bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700 transition"
+              className="flex items-center space-x-1 font-semibold bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 transition"
             >
               <FaUser size={18} />
               <span>Login</span>
