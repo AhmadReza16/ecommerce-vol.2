@@ -45,16 +45,15 @@ axiosClient.interceptors.response.use(
             return axiosClient(originalRequest);
           }
         } catch (refreshErr) {
-          // refresh failed -> clear and redirect to login
+          // refresh failed -> just clear tokens, let React handle redirect
           localStorage.removeItem("token");
           localStorage.removeItem("refresh_token");
-          window.location.href = "/login";
           return Promise.reject(refreshErr);
         }
       }
-      // no refresh token -> force logout
+      // no refresh token -> just clear token
       localStorage.removeItem("token");
-      window.location.href = "/login";
+      return Promise.reject(error);
     }
     return Promise.reject(error);
   }
