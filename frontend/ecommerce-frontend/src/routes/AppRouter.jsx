@@ -9,6 +9,7 @@ import Order from "../pages/Order";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
+import NotFound from "../pages/NotFound";
 const AppRouter = () => {
   return (
     <Routes>
@@ -23,6 +24,7 @@ const AppRouter = () => {
         <Route path="" element={<Profile />} />
       </Route>
       <Route path="/orders/:id" element={<Order />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -6,13 +6,19 @@ import Header from "../components/Header";
 const Order = () => {
   const { id } = useParams(); // گرفتن id سفارش از URL
   const [order, setOrder] = useState(null);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axiosClient
       .get(`orders/${id}/`)
-      .then((res) => setOrder(res.data))
-      .catch((err) => console.error("Error fetching order:", err))
+      .then((res) => {
+        setOrder(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching order:", err);
+        setError(err?.response?.data || err.message || "Failed to fetch order");
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -26,7 +32,14 @@ const Order = () => {
   if (!order)
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <p className="text-gray-500">Order not found 😕</p>
+        <div className="text-center">
+          <p className="text-gray-500">Order not found 😕</p>
+          {error && (
+            <pre className="text-sm text-red-600 mt-2">
+              {JSON.stringify(error, null, 2)}
+            </pre>
+          )}
+        </div>
       </div>
     );
 
