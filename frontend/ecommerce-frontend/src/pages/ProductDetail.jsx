@@ -80,7 +80,7 @@ const ProductDetail = () => {
             <h1 className="text-3xl font-bold mb-3">{product.name}</h1>
             <p className="text-gray-600 mb-4">{product.description}</p>
             <p className="text-2xl font-semibold text-indigo-600 mb-4">
-              {product.price} IRR
+              {product.price} $
             </p>
 
             <button
@@ -94,7 +94,7 @@ const ProductDetail = () => {
 
         {/* بخش نظرات */}
         <section className="mt-12">
-          <h2 className="text-2xl font-bold mb-4">User Reviews 💬</h2>
+          <h2 className="text-2xl font-bold mb-4">Your Reviews 💬</h2>
 
           <form onSubmit={handleAddReview} className="mb-6">
             <textarea

@@ -82,7 +82,7 @@ const Order = () => {
                     <div>
                       <p className="font-semibold">{item.product.name}</p>
                       <p className="text-gray-500 text-sm">
-                        Price: {item.product.price} IRR
+                        Price: {item.product.price} $
                       </p>
                     </div>
                   </div>

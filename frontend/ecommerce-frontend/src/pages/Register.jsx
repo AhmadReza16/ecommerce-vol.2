@@ -10,8 +10,10 @@ const Register = () => {
     username: "",
     email: "",
     password: "",
+    password2: "",
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,11 +22,23 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    // client-side validation: ensure passwords match
+    if (formData.password !== formData.password2) {
+      setErrors({ password2: ["Passwords do not match"] });
+      setLoading(false);
+      return;
+    }
     try {
+      setErrors(null);
       await register(formData);
       navigate("/login");
-    } catch {
-      console.log("Register failed");
+    } catch (err) {
+      // show server validation messages if available
+      console.error("Register failed", err);
+      const resp = err?.response?.data || {
+        non_field_errors: ["Registration failed. Check input."],
+      };
+      setErrors(resp);
     } finally {
       setLoading(false);
     }
@@ -41,6 +55,19 @@ const Register = () => {
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
             Create a new account{" "}
           </h2>
+
+          {errors && (
+            <div className="mb-4 text-sm text-red-600">
+              {Object.entries(errors).map(([field, msgs]) => (
+                <div key={field} className="mb-1">
+                  <strong className="capitalize">
+                    {field.replace(/_/g, " ")}:
+                  </strong>{" "}
+                  {Array.isArray(msgs) ? msgs.join(" ") : String(msgs)}
+                </div>
+              ))}
+            </div>
+          )}
 
           <label className="block mb-2 text-gray-600"> Username</label>
           <input
@@ -72,12 +99,22 @@ const Register = () => {
             className="w-full p-2 border rounded-md mb-6 focus:ring-2 focus:ring-indigo-400"
           />
 
+          <label className="block mb-2 text-gray-600"> Confirm Password</label>
+          <input
+            type="password"
+            name="password2"
+            value={formData.password2}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded-md mb-6 focus:ring-2 focus:ring-indigo-400"
+          />
+
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
           >
-            {loading ? "Registering..." : "Registration"}
+            {loading ? "Sign Up..." : "Sign Up"}
           </button>
 
           <p className="text-center text-sm mt-4">
