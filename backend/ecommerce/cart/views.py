@@ -49,3 +49,32 @@ class RemoveFromCartView(APIView):
             return Response({"message": "Item removed from cart."}, status=204)
         except CartItem.DoesNotExist:
             return Response({"error": "Item not found."}, status=404)
+
+
+class ClearCartView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        try:
+            cart = Cart.objects.get(user=request.user)
+            CartItem.objects.filter(cart=cart).delete()
+            return Response({"message": "Cart cleared successfully."}, status=200)
+        except Cart.DoesNotExist:
+            return Response({"message": "Cart already empty."}, status=200)
+
+
+class UpdateQuantityView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request, item_id):
+        try:
+            item = CartItem.objects.get(id=item_id, cart__user=request.user)
+            quantity = request.data.get('quantity', 1)
+            if int(quantity) < 1:
+                return Response({"error": "Quantity must be at least 1."}, status=400)
+            item.quantity = int(quantity)
+            item.save()
+            serializer = CartItemSerializer(item)
+            return Response(serializer.data, status=200)
+        except CartItem.DoesNotExist:
+            return Response({"error": "Item not found."}, status=404)
