@@ -8,6 +8,7 @@ from .serializers import ReviewSerializer
 class ReviewListCreateView(generics.ListCreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = None  # Disable pagination
 
     def get_queryset(self):
         product_id = self.kwargs['product_id']
