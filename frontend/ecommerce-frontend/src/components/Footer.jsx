@@ -52,15 +52,15 @@ const Footer = () => {
               <li>
                 <Link
                   to="/"
-                  className="text-gray-600 hover:text-primary-600 transition-colors"
+                  className="text-gray-600  transition-colors hover:text-gray-900"
                 >
                   Home page
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/categories"
-                  className="text-gray-600 hover:text-primary-600 transition-colors"
+                  to="/"
+                  className="text-gray-600  transition-colors hover:text-gray-900"
                 >
                   Categories
                 </Link>
@@ -68,7 +68,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/cart"
-                  className="text-gray-600 hover:text-primary-600 transition-colors"
+                  className="text-gray-600  transition-colors hover:text-gray-900"
                 >
                   Shopping cart
                 </Link>
@@ -76,7 +76,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/about"
-                  className="text-gray-600 hover:text-primary-600 transition-colors"
+                  className="text-gray-600 hover:text-primary-600 transition-colors hover:text-gray-800"
                 >
                   About us
                 </Link>
@@ -91,15 +91,15 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2">
               <li className="flex items-center text-gray-600">
-                <Phone className="h-5 w-5 ml-2 mr-2" />
+                <Phone className="h-5 w-5 ml-2 mr-2 hover:text-blue-500" />
                 <span> 123-456-7890 </span>
               </li>
               <li className="flex items-center text-gray-600">
-                <Mail className="h-5 w-5 ml-2 mr-2" />
+                <Mail className="h-5 w-5 ml-2 mr-2 hover:text-yellow-600" />
                 <span> JakePralta@gamil.com</span>
               </li>
               <li className="flex items-center text-gray-600">
-                <MapPin className="h-5 w-5 ml-2 mr-2" />
+                <MapPin className="h-5 w-5 ml-2 mr-2  hover:text-green-700" />
                 <span> New York , Brooklyn Nine-Nine </span>
               </li>
             </ul>
