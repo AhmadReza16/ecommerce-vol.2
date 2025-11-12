@@ -29,14 +29,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'django_filters',
     'users',
     'products',
     'orders',
     'cart',
     'payment',
     'reviews',
-    'rest_framework',
-    'rest_framework_simplejwt',
 ]
 
 AUTH_USER_MODEL = 'users.Account'
@@ -46,6 +47,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+        "PAGE_SIZE": 8,
+    
 }
 
 MIDDLEWARE = [
