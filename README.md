@@ -32,59 +32,6 @@ This project demonstrates a modern, scalable structure for building real-world o
 
 ---
 
-## 📁 Folder Structure
-
-### Backend (Django)
-
-backend/
-├── users/
-├── products/
-├── cart/
-├── orders/
-├── payments/
-├── reviews/
-└── ecommerce/ # main project folder
-
-### Frontend (React)
-
-src/
-├── api/ # All axios API files
-│ ├── axiosClient.js
-│ ├── authApi.js
-│ ├── productApi.js
-│ ├── cartApi.js
-│ ├── orderApi.js
-│ ├── paymentApi.js
-│ └── reviewApi.js
-│
-├── context/ # Global states
-│ ├── AuthContext.jsx
-│ └── CartContext.jsx
-│
-├── components/ # Reusable UI components
-│ ├── Header.jsx
-│ ├── ProductCard.jsx
-│ ├── ProductList.jsx
-│ ├── CartItem.jsx
-│ ├── ReviewList.jsx
-│ ├── ReviewForm.jsx
-│ └── Loader.jsx
-│
-├── pages/ # All main pages
-│ ├── Home.jsx
-│ ├── ProductDetail.jsx
-│ ├── Cart.jsx
-│ ├── Checkout.jsx
-│ ├── Login.jsx
-│ ├── Register.jsx
-│ ├── Profile.jsx
-│ ├── OrderList.jsx
-│ └── OrderDetail.jsx
-│
-└── App.jsx # Main router setup
-
----
-
 ## ⚙️ Setup & Installation
 
 ### 🖥️ Backend
@@ -129,7 +76,6 @@ VITE_API_BASE_URL=http://localhost:8000/api
 
 🧪 Future Improvements
 
-- Add pagination and filtering for products
 - Integrate a real payment gateway (e.g., Stripe)
 - Admin dashboard for managing orders and products
 - Multi-language support (English / Persian)

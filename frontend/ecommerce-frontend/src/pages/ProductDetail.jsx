@@ -15,6 +15,13 @@ const ProductDetail = () => {
   const { addToCart } = useCart();
   const [loading, setLoading] = useState(true);
 
+  const getImageUrl = (imageField) => {
+    if (!imageField) return "https://via.placeholder.com/400x300?text=No+Image";
+    if (imageField.startsWith("http")) return imageField;
+    if (imageField.startsWith("/")) return "http://127.0.0.1:8000" + imageField;
+    return "http://127.0.0.1:8000/" + imageField;
+  };
+
   // fetch product details and reviews
   // fetch helper used on mount and after adding reviews
   useEffect(() => {
@@ -27,7 +34,11 @@ const ProductDetail = () => {
         ]);
         if (!mounted) return;
         setProduct(pRes.data);
-        setReviews(rRes.data || []);
+        // Handle both array and paginated response formats
+        const reviewsData = Array.isArray(rRes.data)
+          ? rRes.data
+          : rRes.data?.results || [];
+        setReviews(reviewsData);
       } catch {
         // ignore - will show product not found or empty reviews
       } finally {
@@ -69,9 +80,13 @@ const ProductDetail = () => {
           {/* تصویر محصول */}
           <div>
             <img
-              src={product.image}
+              src={getImageUrl(product.image)}
               alt={product.name}
               className="rounded-2xl shadow-lg w-full h-96 object-cover"
+              onError={(e) => {
+                e.target.src =
+                  "https://via.placeholder.com/400x300?text=No+Image";
+              }}
             />
           </div>
 
@@ -84,7 +99,7 @@ const ProductDetail = () => {
             </p>
 
             <button
-              onClick={() => addToCart(product.id)}
+              onClick={() => addToCart(product.id, 1)}
               className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition"
             >
               Add to Cart 🛒
@@ -145,7 +160,10 @@ const ProductDetail = () => {
                   reviewApi.getReviews(product.id),
                 ]);
                 setProduct(pRes.data);
-                setReviews(rRes.data || []);
+                const reviewsData = Array.isArray(rRes.data)
+                  ? rRes.data
+                  : rRes.data?.results || [];
+                setReviews(reviewsData);
               } catch {
                 // ignore
               } finally {
