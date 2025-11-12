@@ -6,19 +6,19 @@ import axiosClient from "./axiosClient";
 // `.getById(...).then(res => res.data)`.
 const productApi = {
   // convenience (returns parsed data)
-  getProducts: async () => {
-    const res = await axiosClient.get("products/");
+  getProducts: async (params = {}) => {
+    const res = await axiosClient.get("/products/", { params });
     return res.data;
   },
 
   getProductDetail: async (id) => {
-    const res = await axiosClient.get(`products/${id}/`);
+    const res = await axiosClient.get(`/products/${id}/`);
     return res.data;
   },
 
   // backward-compatible raw axios response (used in some pages)
-  getAll: () => axiosClient.get("products/"),
-  getById: (id) => axiosClient.get(`products/${id}/`),
+  getAll: () => axiosClient.get("/products/"),
+  getById: (id) => axiosClient.get(`/products/${id}/`),
 };
 
 export default productApi;
