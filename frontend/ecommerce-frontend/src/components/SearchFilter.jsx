@@ -60,7 +60,7 @@ export default function SearchFilter({ onFilterChange }) {
         type="submit"
         className="bg-gray-600 text-white px-4 py-1 rounded hover:bg-gray-700"
       >
-        Apply
+        Search
       </button>
     </form>
   );

@@ -1,99 +1,127 @@
-// src/components/ReviewForm.jsx
 import { useState } from "react";
+import { Star } from "lucide-react";
 import reviewApi from "../api/reviewApi";
 import { useAuth } from "../context/AuthContext";
 
 const ReviewForm = ({ productId, onReviewAdded }) => {
   const { user } = useAuth();
-  const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(0);
+  const [hovered, setHovered] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
 
   if (!user) {
     return (
-      <p className="text-gray-600 mt-4">
-        Please <span className="text-indigo-600 font-medium">login</span> to
-        write a review.
-      </p>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-8">
+        <p className="text-gray-700">
+          Please <span className="text-indigo-600 font-semibold">login</span> to
+          write a review.
+        </p>
+      </div>
     );
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!comment.trim()) {
-      setError("Comment cannot be empty.");
+    if (!comment.trim() || rating === 0) {
+      setError("Please provide a rating and comment.");
       return;
     }
-
+    setError(null);
     setLoading(true);
-    setError("");
 
     try {
-      await reviewApi.create({
-        product: productId,
-        rating,
-        comment,
-      });
-
+      // addReview sends {rating, comment} without product_id (it's in the URL)
+      await reviewApi.addReview(productId, { rating, comment });
       setComment("");
-      setRating(5);
-      if (onReviewAdded) onReviewAdded();
+      setRating(0);
+      onReviewAdded?.(); // Reload reviews
     } catch (err) {
-      console.error(err);
-      setError("Error submitting review.");
+      console.error("Review submission error:", err);
+      setError(
+        err?.response?.data?.detail ||
+          err?.response?.data?.comment?.[0] ||
+          err?.response?.data?.rating?.[0] ||
+          err.message ||
+          "Failed to submit review."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white shadow-md rounded-lg p-4 mt-6"
-    >
-      <h3 className="text-lg font-semibold mb-3">Leave a Review</h3>
+    <div className="bg-white shadow-md rounded-lg p-6 mt-8 border border-gray-100">
+      <h3 className="text-xl font-bold mb-4 text-gray-800">Leave a Review</h3>
 
-      {error && <p className="text-red-500 mb-2">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        {/* Rating Stars */}
+        <div className="mb-5">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Rating
+          </label>
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                size={32}
+                onClick={() => setRating(star)}
+                onMouseEnter={() => setHovered(star)}
+                onMouseLeave={() => setHovered(0)}
+                className={`cursor-pointer transition-colors ${
+                  star <= (hovered || rating)
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300 hover:text-yellow-300"
+                }`}
+              />
+            ))}
+            {rating > 0 && (
+              <span className="text-sm text-gray-600 ml-2">
+                {rating} / 5 stars
+              </span>
+            )}
+          </div>
+        </div>
 
-      <div className="mb-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Rating
-        </label>
-        <select
-          value={rating}
-          onChange={(e) => setRating(parseInt(e.target.value))}
-          className="mt-1 block w-full border rounded-md p-2"
+        {/* Comment */}
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Your Comment
+          </label>
+          <textarea
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+            rows="4"
+            placeholder="Share your thoughts about this product..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            {comment.length} / 500 characters
+          </p>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+            <p className="text-sm">⚠️ {error}</p>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading || !comment.trim() || rating === 0}
+          className={`w-full py-2 px-4 rounded-lg font-semibold transition ${
+            loading || !comment.trim() || rating === 0
+              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+              : "bg-indigo-600 text-white hover:bg-indigo-700"
+          }`}
         >
-          {[5, 4, 3, 2, 1].map((r) => (
-            <option key={r} value={r}>
-              {r} Star{r > 1 ? "s" : ""}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Comment
-        </label>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          className="mt-1 block w-full border rounded-md p-2"
-          rows="3"
-          placeholder="Write your review here..."
-        ></textarea>
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition "
-      >
-        {loading ? "Submitting..." : "Submit Review"}
-      </button>
-    </form>
+          {loading ? "Submitting..." : "Submit Review"}
+        </button>
+      </form>
+    </div>
   );
 };
 

@@ -1,49 +1,133 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { Star, Trash2 } from "lucide-react";
 import reviewApi from "../api/reviewApi";
+import { useAuth } from "../context/AuthContext";
 
 const ReviewList = ({ productId }) => {
+  const { user } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchReviews = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const res = await reviewApi.list(productId);
-        setReviews(res.data);
+        const res = await reviewApi.getReviews(productId);
+        const reviewsData = Array.isArray(res.data)
+          ? res.data
+          : res.data?.results || [];
+        setReviews(reviewsData);
       } catch (err) {
         console.error("Error fetching reviews:", err);
+        setError("Failed to load reviews.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchReviews();
   }, [productId]);
 
-  if (loading) return <p className="text-gray-500">Loading reviews...</p>;
-  if (reviews.length === 0)
-    return <p className="text-gray-500">No reviews yet.</p>;
+  const handleDelete = async (reviewId) => {
+    if (!window.confirm("Are you sure you want to delete this review?")) return;
+
+    try {
+      await reviewApi.deleteReview(productId, reviewId);
+      setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+    } catch (err) {
+      console.error("Error deleting review:", err);
+      setError("Failed to delete review.");
+    }
+  };
+
+  const renderStars = (rating) => (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          size={16}
+          className={
+            star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+          }
+        />
+      ))}
+    </div>
+  );
+
+  if (loading) {
+    return <p className="text-gray-500 text-center mt-6">Loading reviews...</p>;
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mt-6">
+        <p className="text-sm">{error}</p>
+      </div>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mt-8 text-center">
+        <p className="text-gray-600">
+          No reviews yet. Be the first to review this product! 🌟
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-4 mt-4">
-      <h3 className="text-lg font-semibold border-b pb-2">Customer Reviews</h3>
-      {reviews.map((review) => (
-        <div
-          key={review.id}
-          className="bg-gray-50 p-4 rounded-lg shadow-sm border"
-        >
-          <div className="flex justify-between items-center mb-2">
-            <h4 className="font-semibold text-gray-800">
-              {review.user.username}
-            </h4>
-            <p className="text-yellow-500">⭐ {review.rating}/5</p>
+    <div className="mt-8">
+      <h3 className="text-xl font-bold mb-4 text-gray-800">
+        Customer Reviews ({reviews.length})
+      </h3>
+      <div className="space-y-4">
+        {reviews.map((review) => (
+          <div
+            key={review.id}
+            className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition"
+          >
+            {/* Header: User name and rating */}
+            <div className="flex items-start justify-between mb-2">
+              <div>
+                <p className="font-semibold text-gray-800">
+                  {review.user_name || "Anonymous"}
+                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  {renderStars(review.rating)}
+                  <span className="text-xs text-gray-500">
+                    {review.rating}/5
+                  </span>
+                </div>
+              </div>
+
+              {/* Delete button if user is the reviewer */}
+              {user?.id === review.user && (
+                <button
+                  onClick={() => handleDelete(review.id)}
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded transition"
+                  title="Delete review"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+            </div>
+
+            {/* Comment */}
+            <p className="text-gray-700 text-sm mb-2">{review.comment}</p>
+
+            {/* Date */}
+            <p className="text-xs text-gray-400">
+              {new Date(review.created_at).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
           </div>
-          <p className="text-gray-700">{review.comment}</p>
-          <p className="text-gray-400 text-sm mt-1">
-            {new Date(review.created_at).toLocaleString()}
-          </p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
