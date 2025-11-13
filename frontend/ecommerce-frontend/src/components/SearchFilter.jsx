@@ -56,10 +56,21 @@ export default function SearchFilter({ onFilterChange }) {
             </option>
           ))}
       </select>
-      <button
-        type="submit"
-        className="bg-gray-600 text-white px-4 py-1 rounded hover:bg-gray-700"
-      >
+      <button className="flex items-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition-all duration-200 border border-gray-300 shadow-sm">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="2"
+          stroke="currentColor"
+          className="w-5 h-5"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z"
+          />
+        </svg>
         Search
       </button>
     </form>

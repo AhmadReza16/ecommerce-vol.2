@@ -17,31 +17,52 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="border rounded-xl shadow-sm hover:shadow-md p-4 transition bg-white">
+    <div className="group bg-white shadow-md hover:shadow-xl transition rounded-2xl overflow-hidden border border-gray-100 relative">
       {/* تصویر محصول */}
-      <Link to={`/product/${product.id}`}>
-        <img
-          src={getImageUrl(product.image)}
-          alt={product.name}
-          className="w-full h-48 object-cover rounded-lg mb-3"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "https://via.placeholder.com/400x300?text=No+Image";
-          }}
-        />
-      </Link>
+      <div className="overflow-hidden">
+        <Link to={`/product/${product.id}`}>
+          <img
+            src={getImageUrl(product.image)}
+            alt={product.name}
+            className="w-full h-60 object-cover transform group-hover:scale-110 transition duration-500"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src =
+                "https://via.placeholder.com/400x300?text=No+Image";
+            }}
+          />
+        </Link>
+      </div>
 
       {/* اطلاعات */}
-      <h3 className="text-lg font-semibold text-gray-800 mb-1">
+      <h3 className="pl-2 text-sm text-gray-700 mt-2 line-clamp-2">
         {product.name}
       </h3>
-      <p className="text-indigo-600 font-bold mb-3">${product.price}</p>
+
+      <div className="flex justify-between items-center mt-2">
+        <p className="pl-2 text-indigo-600 font-bold mb-3">${product.price}</p>
+      </div>
 
       {/* دکمه */}
       <button
         onClick={handleAdd}
-        className="bg-indigo-600 text-white w-full py-2 rounded-lg hover:bg-indigo-700 transition"
+        className="w-full flex items-center justify-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-green-800 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
       >
+        {" "}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="2"
+          stroke="currentColor"
+          className="w-5 h-5"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.293 2.293A1 1 0 007 17h10a1 1 0 00.894-.553L21 9M7 13V6h14"
+          />
+        </svg>
         Add to Cart
       </button>
     </div>

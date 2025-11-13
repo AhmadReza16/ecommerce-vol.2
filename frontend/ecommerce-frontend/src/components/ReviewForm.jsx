@@ -53,7 +53,9 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mt-8 border border-gray-100">
-      <h3 className="text-xl font-bold mb-4 text-gray-800">Leave a Review</h3>
+      <h3 className="text-xl font-bold mb-4 text-gray-800">
+        Write your comment
+      </h3>
 
       <form onSubmit={handleSubmit}>
         {/* Rating Stars */}

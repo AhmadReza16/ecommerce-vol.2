@@ -55,7 +55,7 @@ const Header = () => {
           {user ? (
             <button
               onClick={logout}
-              className="bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 transition"
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
             >
               Logout
             </button>
