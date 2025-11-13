@@ -10,6 +10,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import NotFound from "../pages/NotFound";
+import AboutUs from "../pages/AboutUs";
+
 const AppRouter = () => {
   return (
     <Routes>
@@ -25,6 +27,7 @@ const AppRouter = () => {
       </Route>
       <Route path="/orders/:id" element={<Order />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/about" element={<AboutUs />} />
     </Routes>
   );
 };
