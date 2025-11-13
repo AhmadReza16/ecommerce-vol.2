@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { useSearchParams } from "react-router-dom";
 import productApi from "../api/productApi";
 import ProductCard from "../components/ProductCard";
 import Header from "../components/Header";
@@ -13,12 +13,24 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [error, setError] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [filters, setFilters] = useState({
-    page: 1,
-    category: "",
-    search: "",
+    page: parseInt(searchParams.get("page")) || 1,
+    category: searchParams.get("category") || "",
+    search: searchParams.get("search") || "",
   });
+
+  // Keep in sync with backend ProductPagination.page_size
+  const PAGE_SIZE = 12;
+
+  useEffect(() => {
+    const params = {};
+    if (filters.search) params.search = filters.search;
+    if (filters.category) params.category = filters.category;
+    if (filters.page > 1) params.page = filters.page;
+    setSearchParams(params);
+  }, [filters, setSearchParams]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -57,10 +69,13 @@ const Home = () => {
   };
 
   const handlePageChange = (page) => {
-    setFilters((prev) => ({ ...prev, page }));
+    // Clamp requested page to available pages to avoid DRF returning 404 for out-of-range pages
+    const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+    const clamped = Math.max(1, Math.min(page, totalPages));
+    setFilters((prev) => ({ ...prev, page: clamped }));
   };
 
-  const totalPages = Math.ceil(count / 8);
+  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
 
   if (loading) return <Loader />;
 
