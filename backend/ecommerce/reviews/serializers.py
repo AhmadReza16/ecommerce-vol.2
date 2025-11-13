@@ -8,4 +8,4 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'user', 'user_name', 'product', 'product_name', 'rating', 'comment', 'created_at']
-        read_only_fields = ['user', 'created_at']
+        read_only_fields = ['user', 'product', 'created_at']  # product is set via URL, not request body
