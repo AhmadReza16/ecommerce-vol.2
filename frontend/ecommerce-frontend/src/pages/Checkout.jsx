@@ -88,7 +88,7 @@ const Checkout = () => {
             <button
               onClick={handlePayment}
               disabled={loading}
-              className="bg-indigo-600 text-white w-full py-2 rounded-lg hover:bg-indigo-700 transition"
+              className="px-6 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold shadow-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-300"
             >
               {loading ? "Processing..." : "Buy Now"}
             </button>

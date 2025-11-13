@@ -25,13 +25,13 @@ const Cart = () => {
         <Header />
         <div className="text-center py-20">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">
-            Your cart is empty 🛒
+            Your cart is empty
           </h2>
           <Link
             to="/"
             className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
           >
-            Go Shopping
+            Go Shopping 🛒
           </Link>
         </div>
       </div>
@@ -55,19 +55,20 @@ const Cart = () => {
           <button
             onClick={handleClearCart}
             disabled={isClearing}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition disabled:opacity-50"
+            className="px-5 py-2 bg-red-600 text-white rounded-md font-semibold shadow-md hover:bg-red-700 hover:animate-pulse transition-all duration-300"
           >
             {isClearing ? "Clearing..." : "Clear Cart"}
           </button>
 
           <div className="text-right">
-            <p className="text-lg font-semibold text-gray-800">
+            <p className="text-lg font-semibold text-gray-800 pb-2">
               Total:{" "}
               <span className="text-indigo-600">${total.toFixed(2)}</span>
             </p>
+
             <Link
               to="/checkout"
-              className="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition mt-2"
+              className="px-6 py-2  rounded-lg bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold shadow-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-300"
             >
               Proceed to Checkout
             </Link>
