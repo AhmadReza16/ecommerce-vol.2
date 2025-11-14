@@ -84,7 +84,9 @@ const Home = () => {
       <>
         <Header />
         <main className="container mx-auto p-6">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">Products</h1>
+          <h1 className="text-3xl font-bold mb-6 text-gray-800 font-serif">
+            Products
+          </h1>
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             <p>
               <strong>Error:</strong> {error}

@@ -19,15 +19,15 @@ const Profile = () => {
   return (
     <>
       <Header />
-      <div className="min-h-[80vh] bg-gray-50 py-10">
+      <div className="min-h-[80vh] bg-gray-50 py-10 font-serif">
         <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-6">
           {/* بخش اطلاعات کاربر */}
           <div className="border-b pb-6 mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-3">
+            <h2 className="text-2xl font-bold text-gray-800 mb-3 ">
               👤 User profile
             </h2>
             {user ? (
-              <div className="space-y-2 text-gray-700">
+              <div className="space-y-2 text-gray-700 ">
                 <p>
                   <span className="font-semibold"> Username: </span>{" "}
                   {user.username}

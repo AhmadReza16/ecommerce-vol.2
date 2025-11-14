@@ -14,7 +14,7 @@ const Checkout = () => {
     setError("");
     try {
       // 1️⃣ ایجاد سفارش
-      const orderRes = await orderApi.create({
+      const orderRes = await orderApi.createOrder({
         items: cart.map((item) => ({
           product: item.product.id,
           quantity: item.quantity,
@@ -23,7 +23,9 @@ const Checkout = () => {
       });
 
       // 2️⃣ انجام پرداخت
-      const paymentRes = await paymentApi.pay(orderRes.data.id, total);
+      const paymentRes = await paymentApi.payOrder(orderRes.data.id, {
+        amount: total,
+      });
 
       // 3️⃣ فرض کنیم سرور URL پرداخت واقعی برمی‌گرداند
       const paymentUrl = paymentRes.data?.payment_url;

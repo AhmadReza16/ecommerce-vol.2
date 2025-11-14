@@ -47,12 +47,12 @@ const Register = () => {
   return (
     <>
       <Header />
-      <div className="flex justify-center items-center min-h-[80vh] bg-gray-50">
+      <div className="flex justify-center items-center min-h-[80vh] bg-gray-50 font-serif">
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-sm"
         >
-          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 ">
             Create a new account{" "}
           </h2>
 

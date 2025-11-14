@@ -24,10 +24,10 @@ const Success = () => {
             </svg>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2 font-serif">
             Payment Successful 🎉
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-6 font-serif">
             Your order has been placed successfully. Thank you for your purchase
             💚
           </p>
@@ -35,13 +35,13 @@ const Success = () => {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/"
-              className="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700 transition"
+              className="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700 transition font-serif"
             >
               Back to Home
             </Link>
             <Link
               to="/profile"
-              className="border border-gray-300 py-2 px-6 rounded-lg hover:bg-gray-100 transition"
+              className="border border-gray-300 py-2 px-6 rounded-lg hover:bg-gray-100 transition font-serif"
             >
               View Orders
             </Link>

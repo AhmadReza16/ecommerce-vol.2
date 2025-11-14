@@ -46,7 +46,7 @@ const Order = () => {
   return (
     <>
       <Header />
-      <div className="bg-gray-50 min-h-[85vh] py-10">
+      <div className="bg-gray-50 min-h-[85vh] py-10 font-serif">
         <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-md p-6">
           {/* اطلاعات کلی سفارش */}
           <div className="border-b pb-6 mb-6">
@@ -55,7 +55,7 @@ const Order = () => {
             </h2>
             <p className="text-gray-600 mb-1">Date: {order.created_at}</p>
             <p className="text-gray-600 mb-1">
-              وضعیت:
+              Status:
               <span
                 className={`ml-2 px-3 py-1 rounded-full text-sm ${
                   order.status === "paid"
@@ -72,13 +72,15 @@ const Order = () => {
                   : "Cancelled"}
               </span>
             </p>
-            <p className="text-gray-600">روش پرداخت: {order.payment_method}</p>
+            <p className="text-gray-600">
+              Payment method: {order.payment_method}{" "}
+            </p>
           </div>
 
           {/* لیست محصولات */}
           <div>
             <h3 className="text-xl font-semibold mb-3 text-gray-800">
-              🛍️ محصولات سفارش
+              🛍️ Order products{" "}
             </h3>
             <ul className="divide-y divide-gray-200">
               {order.items.map((item) => (
@@ -111,7 +113,7 @@ const Order = () => {
           <div className="mt-8 border-t pt-4 text-gray-800">
             <p className="text-lg font-semibold">
               💰 Total:{" "}
-              <span className="text-indigo-600">{order.total_price} IRR</span>
+              <span className="text-indigo-600">{order.total_price} $</span>
             </p>
             <p className="mt-3 text-gray-600">
               📦 Shipping address: {order.address}
