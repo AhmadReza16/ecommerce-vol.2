@@ -1,8 +1,9 @@
 import axiosClient from "./axiosClient";
 
 const paymentApi = {
-  payOrder: (id, data) => axiosClient.post(`payments/${id}/pay/`, data),
-  verifyPayment: (id) => axiosClient.get(`payments/${id}/verify/`),
+  // Backend payment endpoints are under 'payment' (singular)
+  payOrder: (id, data) => axiosClient.post(`payment/pay/${id}/`, data),
+  verifyPayment: (id) => axiosClient.get(`payment/${id}/verify/`),
 };
 
 export default paymentApi;

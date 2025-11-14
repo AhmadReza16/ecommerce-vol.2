@@ -3,7 +3,8 @@ import axiosClient from "./axiosClient";
 const orderApi = {
   getOrders: () => axiosClient.get("orders/"),
   getOrderById: (id) => axiosClient.get(`orders/${id}/`),
-  createOrder: (data) => axiosClient.post("orders/", data),
+  // Backend expects POST to 'orders/create/'
+  createOrder: (data) => axiosClient.post("orders/create/", data),
 };
 
 export default orderApi;
