@@ -46,7 +46,7 @@ const Checkout = () => {
       <div>
         <Header />
         <div className="text-center py-20">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          <h2 className="font-serif text-xl font-semibold text-gray-700 mb-4">
             Your cart is empty 🛒
           </h2>
         </div>
@@ -58,9 +58,9 @@ const Checkout = () => {
     <div>
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold mb-6">Checkout</h2>
+        <h2 className="font-serif text-2xl font-bold mb-6">Checkout</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-serif">
           {/* لیست آیتم‌ها */}
           <div className="space-y-4">
             {cart.map((item) => (
@@ -74,7 +74,7 @@ const Checkout = () => {
           </div>
 
           {/* خلاصه پرداخت */}
-          <div className="border p-4 rounded-lg bg-white">
+          <div className="border border-collapse border-gray-800 p-4 rounded-lg bg-white">
             <h3 className="font-semibold mb-4">Order Summary</h3>
             <p className="mb-4">
               Total:{" "}
@@ -88,7 +88,7 @@ const Checkout = () => {
             <button
               onClick={handlePayment}
               disabled={loading}
-              className="px-6 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold shadow-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-300"
+              className="px-6 py-2 rounded-lg bg-linear-to-r from-purple-500 to-indigo-600 text-white font-bold shadow-lg hover:from-purple-600 hover:to-indigo-800 transition-all duration-300"
             >
               {loading ? "Processing..." : "Buy Now"}
             </button>

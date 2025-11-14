@@ -55,20 +55,20 @@ const Cart = () => {
           <button
             onClick={handleClearCart}
             disabled={isClearing}
-            className="px-5 py-2 bg-red-600 text-white rounded-md font-semibold shadow-md hover:bg-red-700 hover:animate-pulse transition-all duration-300"
+            className="font-serif px-5 py-2 bg-red-600 text-white rounded-md font-semibold shadow-md hover:bg-red-700 hover:animate-pulse transition-all duration-300"
           >
             {isClearing ? "Clearing..." : "Clear Cart"}
           </button>
 
           <div className="text-right">
-            <p className="text-lg font-semibold text-gray-800 pb-2">
+            <p className="font-serif text-lg font-semibold text-gray-800 pb-2">
               Total:{" "}
               <span className="text-indigo-600">${total.toFixed(2)}</span>
             </p>
 
             <Link
               to="/checkout"
-              className="px-6 py-2  rounded-lg bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold shadow-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-300"
+              className="font-serif px-6 py-2  rounded-lg bg-linear-to-r from-purple-500 to-indigo-600 text-white font-bold shadow-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-300"
             >
               Proceed to Checkout
             </Link>
