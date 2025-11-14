@@ -41,12 +41,12 @@ export default function SearchFilter({ onFilterChange }) {
         placeholder="Search products..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="border px-3 py-1 rounded w-60"
+        className="border  px-3 py-1 rounded w-60 font-serif "
       />
       <select
         value={category}
         onChange={(e) => setCategory(e.target.value)}
-        className="border px-3 py-1 rounded"
+        className="border px-3 py-1 rounded font-serif"
       >
         <option value="">All Categories</option>
         {Array.isArray(categories) &&
@@ -56,7 +56,7 @@ export default function SearchFilter({ onFilterChange }) {
             </option>
           ))}
       </select>
-      <button className="flex items-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition-all duration-200 border border-gray-300 shadow-sm">
+      <button className="flex items-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition-all duration-200 border border-gray-300 shadow-sm font-serif">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

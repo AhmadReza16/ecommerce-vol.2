@@ -35,18 +35,20 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* اطلاعات */}
-      <h3 className="pl-2 text-sm text-gray-700 mt-2 line-clamp-2">
+      <h3 className="pl-2 text-sm text-gray-700 mt-2 line-clamp-2 font-serif">
         {product.name}
       </h3>
 
       <div className="flex justify-between items-center mt-2">
-        <p className="pl-2 text-indigo-600 font-bold mb-3">${product.price}</p>
+        <p className="pl-2 text-indigo-600 font-bold mb-3 font-serif">
+          ${product.price}
+        </p>
       </div>
 
       {/* دکمه */}
       <button
         onClick={handleAdd}
-        className="w-full flex items-center justify-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-green-800 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+        className="font-serif w-full flex items-center justify-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-green-800 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
       >
         {" "}
         <svg

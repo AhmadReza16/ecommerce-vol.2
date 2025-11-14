@@ -33,6 +33,30 @@ const CartItem = ({ item }) => {
     }
   };
 
+  const increment = async () => {
+    const newQty = (item.quantity || 1) + 1;
+    setIsUpdating(true);
+    try {
+      await updateQuantity(item.id, newQty);
+    } catch (err) {
+      console.error("Failed to increment quantity:", err);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const decrement = async () => {
+    const newQty = Math.max(1, (item.quantity || 1) - 1);
+    setIsUpdating(true);
+    try {
+      await updateQuantity(item.id, newQty);
+    } catch (err) {
+      console.error("Failed to decrement quantity:", err);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   // Get image URL with fallback - handle both relative and absolute URLs
   const getImageUrl = (imageField) => {
     if (!imageField) return "https://via.placeholder.com/80?text=No+Image";
@@ -54,7 +78,7 @@ const CartItem = ({ item }) => {
   const imageUrl = getImageUrl(item.product?.image);
 
   return (
-    <div className="flex items-center justify-between border-b py-4">
+    <div className="flex items-center justify-between  py-4 ">
       <div className="flex items-center space-x-4">
         <img
           src={imageUrl}
@@ -65,31 +89,53 @@ const CartItem = ({ item }) => {
           }}
         />
         <div>
-          <h3 className="font-semibold text-gray-800">
+          <h3 className="font-semibold text-gray-800 font-serif">
             {item.product?.name || "Unknown Product"}
           </h3>
-          <p className="text-indigo-600 font-medium">
+          <p className="text-indigo-600 font-medium font-serif">
             ${item.product?.price || "0.00"}
           </p>
         </div>
       </div>
 
       <div className="flex items-center space-x-4">
-        {/* تغییر تعداد */}
-        <input
-          type="number"
-          value={item.quantity || 1}
-          min="1"
-          onChange={handleChange}
-          disabled={isUpdating}
-          className="w-16 border rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
-        />
+        {/* Quantity control: decrement, editable input, increment */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={decrement}
+            disabled={isUpdating}
+            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
+            aria-label="Decrease quantity"
+          >
+            -
+          </button>
+
+          <input
+            type="number"
+            value={item.quantity || 1}
+            min="1"
+            onChange={handleChange}
+            disabled={isUpdating}
+            className="font-serif w-16 text-center px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          />
+
+          <button
+            type="button"
+            onClick={increment}
+            disabled={isUpdating}
+            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
+        </div>
 
         {/* حذف آیتم */}
         <button
           onClick={handleRemove}
           disabled={isRemoving}
-          className="text-red-500 hover:text-red-700 transition disabled:opacity-50"
+          className="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition"
         >
           <FiTrash2 size={20} />
         </button>

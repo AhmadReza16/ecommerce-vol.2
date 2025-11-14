@@ -18,7 +18,7 @@ const Header = () => {
         {/* برند */}
         <Link
           to="/"
-          className="text-2xl font-bold text-gray-700 hover:text-gray-600 transition"
+          className="text-2xl font-bold text-gray-700 hover:text-gray-600 transition font-serif "
         >
           My Fake Shop
         </Link>
@@ -27,14 +27,14 @@ const Header = () => {
         <nav className="flex items-center space-x-6">
           <Link
             to="/"
-            className="text-gray-600 hover:text-indigo-600 transition"
+            className="text-gray-600 hover:text-indigo-600 transition font-serif"
           >
             Home
           </Link>
           {user && (
             <Link
               to="/profile"
-              className="text-gray-600 hover:text-indigo-600 transition"
+              className="text-gray-600 hover:text-indigo-600 transition font-serif"
             >
               Profile
             </Link>
@@ -55,14 +55,14 @@ const Header = () => {
           {user ? (
             <button
               onClick={logout}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition font-serif"
             >
               Logout
             </button>
           ) : (
             <Link
               to="/login"
-              className="flex items-center space-x-1 font-semibold bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 transition"
+              className="flex items-center space-x-1 font-semibold bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 transition font-serif"
             >
               <FaUser size={18} />
               <span>Login</span>
