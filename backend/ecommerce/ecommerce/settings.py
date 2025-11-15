@@ -39,10 +39,20 @@ INSTALLED_APPS = [
     'cart',
     'payment',
     'reviews',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
+
+SITE_ID = 1
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_REQUIRED = True
 
 AUTH_USER_MODEL = 'users.Account'
 USERNAME_FIELD = 'email'
+
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

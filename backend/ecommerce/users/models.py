@@ -22,3 +22,13 @@ class UserProfile(models.Model):
     user =models.OneToOneField(Account , on_delete=models.CASCADE)
     address = models.CharField(max_length=100)
     profile_picture = models.ImageField(blank=True , upload_to='userprofile')
+    phone = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return self.user
+    
+class Address(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    city = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=20)
+    address_line = models.CharField(max_length=255)

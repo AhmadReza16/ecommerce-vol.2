@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Account
+from .models import Account , Address
 from django.contrib.auth.password_validation import validate_password
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -29,4 +29,10 @@ class UserSerializer(serializers.ModelSerializer):
     """Serializer for returning basic user info in authenticated endpoints."""
     class Meta:
         model = Account
-        fields = ['id', 'email', 'username']
+        fields = ['id', 'email', 'username','phone']
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ["city", "postal_code", "address_line"]
