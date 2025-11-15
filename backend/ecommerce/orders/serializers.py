@@ -18,3 +18,14 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['id', 'user', 'status', 'status_display', 'total_price', 'address', 'created_at', 'items']
         read_only_fields = ['user', 'total_price', 'created_at', 'status']
+
+
+class CreateOrderSerializer(serializers.Serializer):
+    """Serializer for creating orders with address validation."""
+    address = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    
+    def validate_address(self, value):
+        """Validate address format."""
+        if value and len(value.strip()) < 10:
+            raise serializers.ValidationError("Address must be at least 10 characters long.")
+        return value.strip() if value else None
