@@ -2,7 +2,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Cart, CartItem
-from .serializers import CartSerializer, CartItemSerializer
+from .serializers import CartSerializer, CartItemSerializer, AddToCartSerializer, UpdateQuantitySerializer
 from products.models import Product
 
 
@@ -18,24 +18,35 @@ class AddToCartView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        product_id = request.data.get('product_id')
-        quantity = int(request.data.get('quantity', 1))
+        # Validate input using serializer
+        serializer = AddToCartSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        product_id = serializer.validated_data['product_id']
+        quantity = serializer.validated_data['quantity']
 
         try:
-            product = Product.objects.get(id=product_id)
+            product = Product.objects.get(id=product_id, is_active=True)
         except Product.DoesNotExist:
-            return Response({"error": "Product not found."}, status=404)
+            return Response({"error": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
 
         cart, _ = Cart.objects.get_or_create(user=request.user)
         item, created = CartItem.objects.get_or_create(cart=cart, product=product)
 
-        if not created:
-            item.quantity += quantity
-        else:
-            item.quantity = quantity
+        # Calculate new quantity
+        new_quantity = item.quantity + quantity if not created else quantity
 
+        # Check if new quantity exceeds stock
+        if new_quantity > product.stock:
+            return Response(
+                {"error": f"Not enough stock. Available: {product.stock}, Requested: {new_quantity}."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        item.quantity = new_quantity
         item.save()
-        return Response({"message": "Product added to cart successfully."})
+        return Response({"message": "Product added to cart successfully."}, status=status.HTTP_200_OK)
     
 
 
@@ -67,14 +78,26 @@ class UpdateQuantityView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def put(self, request, item_id):
+        # Validate input using serializer
+        serializer = UpdateQuantitySerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        quantity = serializer.validated_data['quantity']
+        
         try:
-            item = CartItem.objects.get(id=item_id, cart__user=request.user)
-            quantity = request.data.get('quantity', 1)
-            if int(quantity) < 1:
-                return Response({"error": "Quantity must be at least 1."}, status=400)
-            item.quantity = int(quantity)
-            item.save()
-            serializer = CartItemSerializer(item)
-            return Response(serializer.data, status=200)
+            item = CartItem.objects.select_related('product').get(id=item_id, cart__user=request.user)
         except CartItem.DoesNotExist:
-            return Response({"error": "Item not found."}, status=404)
+            return Response({"error": "Item not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Check stock availability
+        if item.product.stock < quantity:
+            return Response(
+                {"error": f"Only {item.product.stock} items available in stock."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        item.quantity = quantity
+        item.save()
+        item_serializer = CartItemSerializer(item)
+        return Response(item_serializer.data, status=status.HTTP_200_OK)
