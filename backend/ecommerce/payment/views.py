@@ -13,12 +13,31 @@ class CreatePaymentView(APIView):
         user = request.user
 
         try:
-            order = Order.objects.get(id=order_id, user=user)
+            order = Order.objects.prefetch_related('items__product').get(id=order_id, user=user)
         except Order.DoesNotExist:
             return Response({"error": "Order not found."}, status=404)
 
         if order.status != 'pending':
             return Response({"error": "Order already paid or processed."}, status=400)
+
+        # Validate stock availability before payment
+        insufficient_stock_items = []
+        for item in order.items.all():
+            if item.product.stock < item.quantity:
+                insufficient_stock_items.append({
+                    "product": item.product.name,
+                    "available": item.product.stock,
+                    "requested": item.quantity
+                })
+        
+        if insufficient_stock_items:
+            return Response(
+                {
+                    "error": "Some products don't have enough stock.",
+                    "details": insufficient_stock_items
+                },
+                status=400
+            )
 
         # Simulate successful payment
         transaction_id = str(uuid.uuid4())
@@ -30,6 +49,11 @@ class CreatePaymentView(APIView):
             status='success',
             transaction_id=transaction_id
         )
+
+        # Decrease product stock after successful payment
+        for item in order.items.all():
+            item.product.stock -= item.quantity
+            item.product.save()
 
         # Change order status to paid
         order.status = 'paid'
