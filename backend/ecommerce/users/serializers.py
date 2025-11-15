@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
     """Serializer for returning basic user info in authenticated endpoints."""
     class Meta:
         model = Account
-        fields = ['id', 'email', 'username','phone']
+        fields = ['id', 'email', 'username']
 
 
 class AddressSerializer(serializers.ModelSerializer):
