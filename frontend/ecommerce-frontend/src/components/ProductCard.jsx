@@ -1,15 +1,9 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { getImageUrl } from "../utils/imageUtils";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
-
-  const getImageUrl = (imageField) => {
-    if (!imageField) return "https://via.placeholder.com/400x300?text=No+Image";
-    if (imageField.startsWith("http")) return imageField;
-    if (imageField.startsWith("/")) return "http://127.0.0.1:8000" + imageField;
-    return "http://127.0.0.1:8000" + imageField;
-  };
 
   const handleAdd = () => {
     // pass product id to addToCart (backend expects product_id)
@@ -45,10 +39,26 @@ const ProductCard = ({ product }) => {
         </p>
       </div>
 
+      {/* نمایش موجودی */}
+      <div className="px-2 mb-2 font-serif">
+        <span
+          className={`text-sm font-semibold ${
+            product.stock > 0 ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {product.stock > 0 ? `Inventory: ${product.stock}` : "Non-existent"}
+        </span>
+      </div>
+
       {/* دکمه */}
       <button
         onClick={handleAdd}
-        className="font-serif w-full flex items-center justify-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-green-800 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+        disabled={product.stock === 0}
+        className={`font-serif w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold shadow-md transition-all duration-300 ${
+          product.stock > 0
+            ? "bg-green-700 text-white hover:bg-green-800 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
+            : "bg-gray-400 text-white cursor-not-allowed opacity-60"
+        }`}
       >
         {" "}
         <svg
@@ -65,7 +75,7 @@ const ProductCard = ({ product }) => {
             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.293 2.293A1 1 0 007 17h10a1 1 0 00.894-.553L21 9M7 13V6h14"
           />
         </svg>
-        Add to Cart
+        {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
       </button>
     </div>
   );

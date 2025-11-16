@@ -2,6 +2,7 @@
 import { FiTrash2 } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
+import { getImageUrl } from "../utils/imageUtils";
 
 const CartItem = ({ item }) => {
   const { removeFromCart, updateQuantity } = useCart();
@@ -57,24 +58,6 @@ const CartItem = ({ item }) => {
     }
   };
 
-  // Get image URL with fallback - handle both relative and absolute URLs
-  const getImageUrl = (imageField) => {
-    if (!imageField) return "https://via.placeholder.com/80?text=No+Image";
-
-    // If it's already an absolute URL (http/https), use as-is
-    if (imageField.startsWith("http://") || imageField.startsWith("https://")) {
-      return imageField;
-    }
-
-    // If it's a relative path (e.g., /media/...), prepend base URL
-    if (imageField.startsWith("/")) {
-      return `http://127.0.0.1:8000${imageField}`;
-    }
-
-    // Fallback
-    return "https://via.placeholder.com/80?text=No+Image";
-  };
-
   const imageUrl = getImageUrl(item.product?.image);
 
   return (
@@ -95,6 +78,17 @@ const CartItem = ({ item }) => {
           <p className="text-indigo-600 font-medium font-serif">
             ${item.product?.price || "0.00"}
           </p>
+          <div className="px-2 mb-2 font-serif">
+            <span
+              className={`text-sm font-semibold ${
+                item.product.stock > 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {item.product.stock > 0
+                ? `Inventory: ${item.product.stock}`
+                : "Non-existent"}
+            </span>
+          </div>
         </div>
       </div>
 
