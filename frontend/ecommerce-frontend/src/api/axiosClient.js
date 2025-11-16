@@ -2,8 +2,8 @@ import axios from "axios";
 
 
 const axiosClient = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/", // Django API URL
-    headers: {
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api/",
+  headers: {
     "Content-Type": "application/json",
   },
 });
@@ -31,8 +31,11 @@ axiosClient.interceptors.response.use(
       if (refreshToken) {
         try {
           // use plain axios to avoid interceptor loops
+          const refreshUrl = import.meta.env.VITE_API_BASE_URL 
+            ? `${import.meta.env.VITE_API_BASE_URL}/users/token/refresh/`
+            : "http://127.0.0.1:8000/api/users/token/refresh/";
           const resp = await axios.post(
-            "http://127.0.0.1:8000/api/users/token/refresh/",
+            refreshUrl,
             { refresh: refreshToken },
             { headers: { "Content-Type": "application/json" } }
           );
