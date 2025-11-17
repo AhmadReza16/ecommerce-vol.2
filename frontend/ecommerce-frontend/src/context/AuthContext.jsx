@@ -57,7 +57,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (data) => {
-    return authApi.register(data);
+    const res = await authApi.register(data);
+    const access =
+      res?.data?.access || res?.data?.token || res?.data?.access_token || null;
+    const refresh = res?.data?.refresh || res?.data?.refresh_token || null;
+
+    if (!access) throw new Error("No access token returned from server");
+
+    localStorage.setItem("token", access);
+    if (refresh) localStorage.setItem("refresh_token", refresh);
+    setToken(access);
+
+    // automatically set user from response
+    if (res?.data?.user) {
+      setUser(res.data.user);
+    }
+
+    return res.data;
   };
 
   const logout = async () => {
