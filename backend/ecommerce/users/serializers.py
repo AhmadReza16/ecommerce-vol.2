@@ -1,15 +1,22 @@
 from rest_framework import serializers
 from .models import Account , Address
 from django.contrib.auth.password_validation import validate_password
+from rest_framework.validators import UniqueValidator
 
 class RegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=Account.objects.all())]
+    )
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = Account
         fields = ('username', 'email', 'password', 'password2')
-
+        extra_kwargs = {
+            'username': {'required': True},
+        }
 
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -17,22 +24,37 @@ class RegisterSerializer(serializers.ModelSerializer):
         return data
     
     def create(self, validated_data):
-        user = Account(
-            email=validated_data['email'],
-            username=validated_data['username']
-        )
-        user.set_password(validated_data['password'])
+
+        validated_data.pop('password2', None)
+        password = validated_data.pop('password')
+        user = Account(**validated_data)
+        user.set_password(password)
         user.save()
         return user
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer for returning basic user info in authenticated endpoints."""
+    """Serializer for returning and updating basic user info in authenticated endpoints."""
+    email = serializers.EmailField(required=True)
+
     class Meta:
         model = Account
-        fields = ['id', 'email', 'username']
+        fields = ['id', 'email', 'username', 'first_name', 'last_name']
+        read_only_fields = ['id']
+
+    def validate_email(self, value):
+        """Validate email is unique except for the current instance."""
+        user = self.instance
+        # Only validate uniqueness if updating, not on create
+        if user and Account.objects.filter(email=value).exclude(id=user.id).exists():
+            raise serializers.ValidationError("This email is already in use.")
+        return value
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ["city", "postal_code", "address_line"]
+        fields = ["id", "city", "postal_code", "address_line"]
+        read_only_fields = ["id"]

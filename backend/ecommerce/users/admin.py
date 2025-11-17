@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Account, UserProfile
+from .models import Account, UserProfile, Address
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
@@ -12,3 +12,9 @@ class AccountAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'address')
     search_fields = ('user__email', 'user__username', 'address')
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ('user', 'city', 'postal_code')
+    list_filter = ('city',)
+    search_fields = ('user__email', 'address_line', 'city')
