@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import Header from "../components/Header";
+import { handleApiError } from "../utils/errorHandler";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const { register } = useAuth();
@@ -25,20 +26,32 @@ const Register = () => {
     // client-side validation: ensure passwords match
     if (formData.password !== formData.password2) {
       setErrors({ password2: ["Passwords do not match"] });
+      toast.error("Passwords do not match");
       setLoading(false);
       return;
     }
+
+    // Validate password length
+    if (formData.password.length < 8) {
+      setErrors({ password: ["Password must be at least 8 characters long"] });
+      toast.error("Password must be at least 8 characters long");
+      setLoading(false);
+      return;
+    }
+
     try {
       setErrors(null);
       await register(formData);
-      navigate("/login");
+      toast.success("Registration successful! Logged in automatically.");
+      navigate("/");
     } catch (err) {
       // show server validation messages if available
-      console.error("Register failed", err);
+      const errorMessage = handleApiError(err);
       const resp = err?.response?.data || {
-        non_field_errors: ["Registration failed. Check input."],
+        non_field_errors: [errorMessage],
       };
       setErrors(resp);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -46,11 +59,10 @@ const Register = () => {
 
   return (
     <>
-      <Header />
       <div className="flex justify-center items-center min-h-[80vh] bg-gray-50 font-serif">
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-sm"
+          className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-sm mt-6"
         >
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 ">
             Create a new account{" "}

@@ -1,18 +1,28 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import Header from "../components/Header";
+import Loader from "../components/Loader";
 import { useAuth } from "../context/AuthContext";
+import { handleApiError } from "../utils/errorHandler";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const { user } = useAuth(); // اطلاعات کاربر لاگین شده
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
     axiosClient
       .get("orders/my-orders/")
       .then((res) => setOrders(res.data))
-      .catch((err) => console.error("خطا در دریافت سفارش‌ها", err))
+      .catch((err) => {
+        const errorMessage = handleApiError(err);
+        setError(errorMessage);
+        toast.error(errorMessage);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -48,7 +58,9 @@ const Profile = () => {
             </h3>
 
             {loading ? (
-              <p className="text-gray-500"> Loading orders... </p>
+              <Loader />
+            ) : error ? (
+              <p className="text-red-600">{error}</p>
             ) : orders.length === 0 ? (
               <p className="text-gray-500">
                 {" "}

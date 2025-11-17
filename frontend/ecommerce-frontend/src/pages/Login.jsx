@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import Header from "../components/Header";
+import { handleApiError } from "../utils/errorHandler";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const { login } = useAuth();
@@ -18,9 +19,11 @@ const Login = () => {
     setLoading(true);
     try {
       await login(formData);
+      toast.success("Login successful!");
       navigate("/"); // بعد از ورود برو به صفحه اصلی
-    } catch {
-      console.log("Login failed");
+    } catch (err) {
+      const errorMessage = handleApiError(err);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -28,7 +31,6 @@ const Login = () => {
 
   return (
     <>
-      <Header />
       <div className="flex justify-center items-center min-h-[80vh] bg-gray-50 font-serif">
         <form
           onSubmit={handleSubmit}

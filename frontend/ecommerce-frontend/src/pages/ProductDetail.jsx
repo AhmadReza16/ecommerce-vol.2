@@ -5,30 +5,33 @@ import { useCart } from "../context/CartContext";
 import Header from "../components/Header";
 import ReviewList from "../components/ReviewList";
 import ReviewForm from "../components/ReviewForm";
+import Loader from "../components/Loader";
+import { handleApiError } from "../utils/errorHandler";
+import { getImageUrl } from "../utils/imageUtils";
+import { toast } from "react-toastify";
 
 const ProductDetail = () => {
   const { id } = useParams(); // گرفتن id از URL
   const [product, setProduct] = useState(null);
   const { addToCart } = useCart();
   const [loading, setLoading] = useState(true);
-
-  const getImageUrl = (imageField) => {
-    if (!imageField) return "https://via.placeholder.com/400x300?text=No+Image";
-    if (imageField.startsWith("http")) return imageField;
-    if (imageField.startsWith("/")) return "http://127.0.0.1:8000" + imageField;
-    return "http://127.0.0.1:8000/" + imageField;
-  };
+  const [error, setError] = useState(null);
 
   // fetch product details on mount
   useEffect(() => {
     let mounted = true;
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const pRes = await productApi.getById(id);
         if (!mounted) return;
         setProduct(pRes.data);
-      } catch {
-        // ignore - will show product not found
+      } catch (err) {
+        if (!mounted) return;
+        const errorMessage = handleApiError(err);
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -39,12 +42,27 @@ const ProductDetail = () => {
     };
   }, [id]);
 
-  if (loading)
-    return <p className="text-gray-600 text-center mt-10">Loading...</p>;
-  if (!product)
+  if (loading) {
     return (
-      <p className="text-gray-600 text-center mt-10">Product not found.</p>
+      <>
+        <Header />
+        <Loader />
+      </>
     );
+  }
+
+  if (error || !product) {
+    return (
+      <>
+        <Header />
+        <main className="container mx-auto px-6 py-8">
+          <div className="text-center">
+            <p className="text-red-600 text-lg">{error || "Product not found."}</p>
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>

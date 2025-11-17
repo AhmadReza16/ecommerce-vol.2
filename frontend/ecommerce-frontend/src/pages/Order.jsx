@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 import Header from "../components/Header";
+import Loader from "../components/Loader";
+import { handleApiError } from "../utils/errorHandler";
+import { getImageUrl } from "../utils/imageUtils";
+import { toast } from "react-toastify";
 
 const Order = () => {
   const { id } = useParams(); // گرفتن id سفارش از URL
@@ -10,38 +14,42 @@ const Order = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
     axiosClient
       .get(`orders/${id}/`)
       .then((res) => {
         setOrder(res.data);
       })
       .catch((err) => {
-        console.error("Error fetching order:", err);
-        setError(err?.response?.data || err.message || "Failed to fetch order");
+        const errorMessage = handleApiError(err);
+        setError(errorMessage);
+        toast.error(errorMessage);
       })
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <p className="text-gray-500">Loading order details...</p>
-      </div>
+      <>
+        <Header />
+        <Loader />
+      </>
     );
+  }
 
-  if (!order)
+  if (error || !order) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-500">Order not found 😕</p>
-          {error && (
-            <pre className="text-sm text-red-600 mt-2">
-              {JSON.stringify(error, null, 2)}
-            </pre>
-          )}
+      <>
+        <Header />
+        <div className="min-h-[80vh] flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-600 text-lg">{error || "Order not found."}</p>
+          </div>
         </div>
-      </div>
+      </>
     );
+  }
 
   return (
     <>
@@ -90,9 +98,12 @@ const Order = () => {
                 >
                   <div className="flex items-center gap-4">
                     <img
-                      src={item.product.image}
+                      src={getImageUrl(item.product.image)}
                       alt={item.product.name}
                       className="w-16 h-16 object-cover rounded-md"
+                      onError={(e) => {
+                        e.target.src = "https://via.placeholder.com/80?text=No+Image";
+                      }}
                     />
                     <div>
                       <p className="font-semibold">{item.product.name}</p>
