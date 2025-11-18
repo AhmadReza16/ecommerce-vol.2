@@ -1,4 +1,3 @@
-// src/components/CartItem.jsx
 import { FiTrash2 } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
