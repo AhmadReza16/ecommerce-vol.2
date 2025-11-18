@@ -2,11 +2,11 @@ from rest_framework import status
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Account , Address
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializers import RegisterSerializer, UserSerializer , AddressSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .models import Account , Address
+from .serializers import RegisterSerializer, UserSerializer , AddressSerializer
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -26,8 +26,8 @@ class RegisterView(APIView):
             "access": str(access),
         }, status=status.HTTP_201_CREATED)
 
-class ProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+class ProfileView(APIView):     
+    permission_classes = [IsAuthenticated]      #فقط کاربر لاگین‌شده می‌تواند به این‌ها دسترسی داشته باشد  
 
     def get(self, request):
         serializer = UserSerializer(request.user)

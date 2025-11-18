@@ -3,10 +3,10 @@ from .models import Account , Address
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueValidator
 
-class RegisterSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):          # Serializer مبتنی بر مدل برای ثبت‌نام کاربر 
     email = serializers.EmailField(
         required=True,
-        validators=[UniqueValidator(queryset=Account.objects.all())]
+        validators=[UniqueValidator(queryset=Account.objects.all())] #چک می‌کند ایمیل تکراری نباشد 
     )
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
@@ -15,17 +15,18 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = Account
         fields = ('username', 'email', 'password', 'password2')
         extra_kwargs = {
-            'username': {'required': True},
+            'username': {'required': True},     #extra_kwargs باعث می‌شود username هم اجباری باشد 
         }
 
-    def validate(self, data):
-        if data['password'] != data['password2']:
+    def validate(self, data): 
+        if data['password'] != data['password2']: #چک می‌کند password و password2 برابر باشند 
             raise serializers.ValidationError("Passwords do not match!")
         return data
     
-    def create(self, validated_data):
-
-        validated_data.pop('password2', None)
+    # 
+    def create(self, validated_data):   
+                
+        validated_data.pop('password2', None)       # password2 را حذف می‌کند چون مورد نیاز مدل نیست 
         password = validated_data.pop('password')
         user = Account(**validated_data)
         user.set_password(password)
