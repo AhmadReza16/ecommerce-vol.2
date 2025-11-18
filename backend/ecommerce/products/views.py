@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions, filters, pagination
 from django_filters.rest_framework import DjangoFilterBackend
-from django_filters import FilterSet, CharFilter
+from django_filters import FilterSet, CharFilter , NumberFilter, BooleanFilter
 from .models import Product, Category
 from .serializers import ProductSerializer, CategorySerializer
 
@@ -22,11 +22,18 @@ class ProductPagination(pagination.PageNumberPagination):
 class ProductFilterSet(FilterSet):
     # Allow filtering by category slug
     category = CharFilter(field_name='category__slug', lookup_expr='exact')
-    
+    min_price = NumberFilter(field_name='price', lookup_expr='gte')
+    max_price = NumberFilter(field_name='price', lookup_expr='lte')
+    in_stock = BooleanFilter(method='filter_in_stock')
+
     class Meta:
         model = Product
-        fields = ['category']
+        fields = ['category', 'min_price', 'max_price', 'in_stock']
 
+    def filter_in_stock(self, queryset, name, value):
+        if value:
+            return queryset.filter(stock__gt=0)
+        return queryset
 
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -42,9 +49,11 @@ class ProductListView(generics.ListCreateAPIView):
     filterset_class = ProductFilterSet  # Use custom FilterSet
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'created_at']
+    ordering = ['-created_at']
 
     def get_queryset(self):
-        return Product.objects.filter(is_active=True).select_related('category', 'seller')
+        # use active manager and related joins for performance
+        return Product.active.select_related('category', 'seller').all()
 
     def get_serializer(self, *args, **kwargs):
         """Override to ensure request context is always passed."""
@@ -92,3 +101,6 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
                 raise PermissionDenied("You can only edit your own products.")
         return obj
 
+    def perform_update(self, serializer):
+        # Prevent changing seller via update
+        serializer.save(seller=serializer.instance.seller)
