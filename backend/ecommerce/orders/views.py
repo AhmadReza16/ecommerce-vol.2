@@ -1,4 +1,3 @@
-# orders/views.py
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -78,7 +77,7 @@ class CreateOrderView(APIView):
         # Delete shopping cart items
         cart.items.all().delete()
 
-        order_serializer = OrderSerializer(order)
+        order_serializer = OrderSerializer(order, context={"request": request})
         return Response(order_serializer.data, status=status.HTTP_201_CREATED)
 
 

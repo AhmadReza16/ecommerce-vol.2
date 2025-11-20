@@ -3,7 +3,7 @@ from .models import Order, OrderItem
 from products.serializers import ProductSerializer
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)
+    product = ProductSerializer(read_only=True ,allow_null=True)
 
     class Meta:
         model = OrderItem
@@ -11,9 +11,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True, read_only=True)
+    items = OrderItemSerializer(read_only=True, many=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
-
+    user = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Order
         fields = ['id', 'user', 'status', 'status_display', 'total_price', 'address', 'created_at', 'items']
@@ -26,6 +26,7 @@ class CreateOrderSerializer(serializers.Serializer):
     
     def validate_address(self, value):
         """Validate address format."""
-        if value and len(value.strip()) < 10:
+        value = value.strip()
+        if len(value) < 10:
             raise serializers.ValidationError("Address must be at least 10 characters long.")
-        return value.strip() if value else None
+        return value
