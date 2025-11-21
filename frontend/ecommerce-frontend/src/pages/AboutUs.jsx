@@ -6,13 +6,14 @@ const AboutUs = () => {
   return (
     <>
       <Header />
-      <main className="bg-gray-50 min-h-screen font-serif">
+
+      <main className="bg-gray-50 min-h-screen font-serif  dark:bg-gray-900 dark:text-gray-200">
         {/* Hero Section */}
-        <section className="from-blue-600 to-indigo-700 text-gray-800 py-16 px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 ">
+        <section className="from-blue-600 to-indigo-700 text-gray-800 py-16 px-6 text-center ">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4  dark:bg-gray-900 dark:text-gray-200">
             About Our Store
           </h1>
-          <p className="max-w-2xl mx-auto text-lg text-gray-800">
+          <p className="max-w-2xl mx-auto text-lg text-gray-800 dark:bg-gray-900 dark:text-gray-200">
             Hello guys, my name is AhmadReza16, I am a full stack developer. I
             created this fake Ecommerce with the help of Django and React
             programming languages. I hope you like my little project.
@@ -22,10 +23,10 @@ const AboutUs = () => {
         {/* Mission Section */}
         <section className="container mx-auto py-16 px-6 grid md:grid-cols-2 gap-10 items-center">
           <div>
-            <h2 className="text-3xl font-semibold mb-4 text-gray-800 flex items-center">
+            <h2 className="text-3xl font-semibold mb-4 text-gray-800 flex items-center dark:bg-gray-900 dark:text-gray-200">
               <Target className="text-blue-600 mr-2" /> Our Mission
             </h2>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 leading-relaxed dark:bg-gray-900 dark:text-gray-200">
               Our mission is simple — to make online shopping easier, faster,
               and more enjoyable for everyone. We carefully select our products,
               ensure secure payments, and provide quick delivery, so you can
@@ -40,8 +41,8 @@ const AboutUs = () => {
         </section>
 
         {/* Team Section */}
-        <section className="bg-white py-16 px-6">
-          <div className="container mx-auto text-center">
+        <section className="bg-white py-16 px-6 ">
+          <div className="container mx-auto text-center ">
             <h2 className="text-3xl font-semibold mb-8 flex items-center justify-center text-gray-800">
               <Github className="text-blue-600 mr-2" /> Meet My GitHube
             </h2>
@@ -79,11 +80,11 @@ const AboutUs = () => {
 
         {/* Vision / Values */}
         <section className="container mx-auto py-16 px-6 text-center">
-          <h2 className="text-3xl font-semibold mb-6 flex items-center justify-center text-gray-800">
+          <h2 className="text-3xl font-semibold mb-6 flex items-center justify-center text-gray-800 dark:bg-gray-900 dark:text-gray-200">
             <Heart className="text-gray-500 mr-2 hover:text-red-500" /> What
             Drives Us
           </h2>
-          <p className="max-w-2xl mx-auto text-gray-600 mb-8">
+          <p className="max-w-2xl mx-auto text-gray-600 mb-8 dark:bg-gray-900 dark:text-gray-200">
             We believe shopping should be about joy — not stress. That’s why we
             combine technology, creativity, and human touch to deliver something
             truly special.

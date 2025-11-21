@@ -13,31 +13,38 @@ const Checkout = () => {
     setLoading(true);
     setError("");
     try {
-      // 1️⃣ ایجاد سفارش
+      // 1️⃣ ایجاد سفارش (backend خود سبد را تبدیل به سفارش می‌کند)
+      // فقط آدرس ارسال کنید؛ سبد از درخواست خودکار استخراج می‌شود
       const orderRes = await orderApi.createOrder({
-        items: cart.map((item) => ({
-          product: item.product.id,
-          quantity: item.quantity,
-        })),
-        total_price: total,
+        address: "Default Address", // آدرس پیش‌فرض (می‌توان از user profile دریافت کرد)
       });
+
+      console.log("Order created:", orderRes.data);
 
       // 2️⃣ انجام پرداخت
-      const paymentRes = await paymentApi.payOrder(orderRes.data.id, {
-        amount: total,
-      });
+      const paymentRes = await paymentApi.payOrder(orderRes.data.id, {});
 
-      // 3️⃣ فرض کنیم سرور URL پرداخت واقعی برمی‌گرداند
-      const paymentUrl = paymentRes.data?.payment_url;
-      if (paymentUrl) {
-        clearCart(); // سبد رو خالی می‌کنیم
-        window.location.href = paymentUrl; // هدایت به صفحه پرداخت
+      console.log("Payment response:", paymentRes.data);
+
+      // 3️⃣ اگر پرداخت موفق بود، سبد را خالی کنید
+      if (paymentRes.data?.status === "success") {
+        clearCart();
+        // به صفحه سفارش یا موفقیت هدایت کنید
+        alert("Payment successful! Order placed.");
+        // می‌توانید به صفحه orders هدایت کنید
+        // window.location.href = "/orders";
       } else {
-        throw new Error("Payment URL not returned");
+        throw new Error("Payment was not successful");
       }
     } catch (err) {
-      console.error(err);
-      setError("Payment failed. Please try again.");
+      console.error("Checkout error:", err);
+      // خطای دقیق‌تر را نمایش دهید
+      const errorMsg =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.message ||
+        "Payment failed. Please try again.";
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -59,8 +66,10 @@ const Checkout = () => {
   return (
     <div>
       <Header />
-      <div className="container mx-auto px-4 py-8">
-        <h2 className="font-serif text-2xl font-bold mb-6">Checkout</h2>
+      <div className="container mx-auto px-4 py-8 dark:bg-gray-900 dark:text-gray-200">
+        <h2 className="font-serif text-2xl font-bold mb-6 dark:text-white">
+          Checkout
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-serif">
           {/* لیست آیتم‌ها */}
@@ -76,7 +85,7 @@ const Checkout = () => {
           </div>
 
           {/* خلاصه پرداخت */}
-          <div className="border border-collapse border-gray-800 p-4 rounded-lg bg-white">
+          <div className="border border-collapse border-gray-800 p-4 rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700">
             <h3 className="font-semibold mb-4">Order Summary</h3>
             <p className="mb-4">
               Total:{" "}

@@ -42,9 +42,11 @@ const Order = () => {
     return (
       <>
         <Header />
-        <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="min-h-[80vh] flex items-center justify-center dark:bg-gray-900">
           <div className="text-center">
-            <p className="text-red-600 text-lg">{error || "Order not found."}</p>
+            <p className="text-red-600 dark:text-red-400 text-lg">
+              {error || "Order not found."}
+            </p>
           </div>
         </div>
       </>
@@ -54,8 +56,8 @@ const Order = () => {
   return (
     <>
       <Header />
-      <div className="bg-gray-50 min-h-[85vh] py-10 font-serif">
-        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-gray-50 dark:bg-gray-900 min-h-[85vh] py-10 font-serif">
+        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 dark:shadow-gray-700">
           {/* اطلاعات کلی سفارش */}
           <div className="border-b pb-6 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-3">
@@ -102,7 +104,8 @@ const Order = () => {
                       alt={item.product.name}
                       className="w-16 h-16 object-cover rounded-md"
                       onError={(e) => {
-                        e.target.src = "https://via.placeholder.com/80?text=No+Image";
+                        e.target.src =
+                          "https://via.placeholder.com/80?text=No+Image";
                       }}
                     />
                     <div>

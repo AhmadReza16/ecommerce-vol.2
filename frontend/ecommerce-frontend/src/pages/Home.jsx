@@ -83,7 +83,7 @@ const Home = () => {
     return (
       <>
         <Header />
-        <main className="container mx-auto p-6">
+        <main className="container mx-auto p-6 dark:bg-gray-900 dark:text-gray-200">
           <h1 className="text-3xl font-bold mb-6 text-gray-800 font-serif">
             Products
           </h1>
@@ -101,8 +101,8 @@ const Home = () => {
   return (
     <>
       <Header />
-      <main className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800 font-serif">
+      <main className="container mx-auto p-6 dark:bg-gray-900 dark:text-gray-200">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800 font-serif dark:text-gray-200">
           Products
         </h1>
         <SearchFilter onFilterChange={handleFilterChange} />

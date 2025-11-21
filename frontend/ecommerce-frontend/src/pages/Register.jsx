@@ -59,17 +59,17 @@ const Register = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center min-h-[80vh] bg-gray-50 font-serif">
+      <div className="flex justify-center items-center min-h-[80vh] bg-gray-50 dark:bg-gray-900 font-serif">
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-sm mt-6"
+          className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 w-full max-w-sm mt-6"
         >
-          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 ">
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">
             Create a new account{" "}
           </h2>
 
           {errors && (
-            <div className="mb-4 text-sm text-red-600">
+            <div className="mb-4 text-sm text-red-600 dark:text-red-400">
               {Object.entries(errors).map(([field, msgs]) => (
                 <div key={field} className="mb-1">
                   <strong className="capitalize">
@@ -81,7 +81,10 @@ const Register = () => {
             </div>
           )}
 
-          <label className="block mb-2 text-gray-600"> Username</label>
+          <label className="block mb-2 text-gray-600  dark:text-gray-200">
+            {" "}
+            Username
+          </label>
           <input
             type="text"
             name="username"
@@ -91,17 +94,23 @@ const Register = () => {
             className="w-full p-2 border rounded-md mb-4 focus:ring-2 focus:ring-indigo-400"
           />
 
-          <label className="block mb-2 text-gray-600"> Email </label>
+          <label className="block mb-2 text-gray-600 dark:text-gray-200 ">
+            {" "}
+            Email{" "}
+          </label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full p-2 border rounded-md mb-4 focus:ring-2 focus:ring-indigo-400"
+            className="w-full p-2 border rounded-md mb-4 focus:ring-2 focus:ring-indigo-400 dark:text-gray-200"
           />
 
-          <label className="block mb-2 text-gray-600"> Password</label>
+          <label className="block mb-2 text-gray-600 dark:text-gray-200">
+            {" "}
+            Password
+          </label>
           <input
             type="password"
             name="password"
@@ -111,7 +120,10 @@ const Register = () => {
             className="w-full p-2 border rounded-md mb-6 focus:ring-2 focus:ring-indigo-400"
           />
 
-          <label className="block mb-2 text-gray-600"> Confirm Password</label>
+          <label className="block mb-2 text-gray-600  dark:text-gray-200">
+            {" "}
+            Confirm Password
+          </label>
           <input
             type="password"
             name="password2"
