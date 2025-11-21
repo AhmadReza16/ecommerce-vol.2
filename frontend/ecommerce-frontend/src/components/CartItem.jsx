@@ -60,7 +60,7 @@ const CartItem = ({ item }) => {
   const imageUrl = getImageUrl(item.product?.image);
 
   return (
-    <div className="flex items-center justify-between  py-4 ">
+    <div className="flex items-center justify-between  py-4  dark:bg-gray-900 dark:text-gray-200">
       <div className="flex items-center space-x-4">
         <img
           src={imageUrl}
@@ -71,7 +71,7 @@ const CartItem = ({ item }) => {
           }}
         />
         <div>
-          <h3 className="font-semibold text-gray-800 font-serif">
+          <h3 className="font-semibold text-gray-800 font-serif bg-white dark:bg-gray-900 dark:text-gray-200">
             {item.product?.name || "Unknown Product"}
           </h3>
           <p className="text-indigo-600 font-medium font-serif">
@@ -98,7 +98,7 @@ const CartItem = ({ item }) => {
             type="button"
             onClick={decrement}
             disabled={isUpdating}
-            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
+            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 dark:bg-gray-200 dark:text-gray-800"
             aria-label="Decrease quantity"
           >
             -
@@ -117,7 +117,7 @@ const CartItem = ({ item }) => {
             type="button"
             onClick={increment}
             disabled={isUpdating}
-            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50"
+            className="px-3 py-2 bg-gray-200  hover:bg-gray-300 rounded-lg disabled:opacity-50  dark:bg-gray-200 dark:text-gray-800"
             aria-label="Increase quantity"
           >
             +

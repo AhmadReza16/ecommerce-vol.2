@@ -10,8 +10,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       aria-current={num === currentPage ? "page" : undefined}
       className={`px-3 py-1 border rounded ${
         num === currentPage
-          ? "bg-blue-600 text-white"
-          : "bg-gray-100 hover:bg-gray-200"
+          ? "bg-blue-600 text-white dark:bg-blue-700"
+          : "bg-gray-100 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
       }`}
     >
       {num}
@@ -28,8 +28,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       disabled={currentPage === 1}
       className={`px-3 py-1 border rounded ${
         currentPage === 1
-          ? "bg-gray-200 cursor-not-allowed"
-          : "bg-gray-100 hover:bg-gray-200"
+          ? "bg-gray-200 dark:bg-gray-600 cursor-not-allowed dark:text-gray-400"
+          : "bg-gray-100 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
       }`}
     >
       Prev
@@ -57,7 +57,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 
     if (start > 2) {
       items.push(
-        <span key="start-ellipsis" className="px-2 select-none">
+        <span
+          key="start-ellipsis"
+          className="px-2 select-none dark:text-gray-400"
+        >
           ...
         </span>
       );
@@ -67,7 +70,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 
     if (end < totalPages - 1) {
       items.push(
-        <span key="end-ellipsis" className="px-2 select-none">
+        <span
+          key="end-ellipsis"
+          className="px-2 select-none dark:text-gray-400"
+        >
           ...
         </span>
       );
@@ -85,13 +91,17 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       disabled={currentPage === totalPages}
       className={`px-3 py-1 border rounded ${
         currentPage === totalPages
-          ? "bg-gray-200 cursor-not-allowed"
-          : "bg-gray-100 hover:bg-gray-200"
+          ? "bg-gray-200 dark:bg-gray-600 cursor-not-allowed dark:text-gray-400"
+          : "bg-gray-100 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
       }`}
     >
       Next
     </button>
   );
 
-  return <div className="flex justify-center mt-6 gap-2">{items}</div>;
+  return (
+    <div className="flex justify-center mt-6 gap-2 dark:text-gray-200">
+      {items}
+    </div>
+  );
 }

@@ -11,7 +11,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group bg-white shadow-md hover:shadow-xl transition rounded-2xl overflow-hidden border border-gray-100 relative">
+    <div className="group bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 relative">
       {/* تصویر محصول */}
       <div className="overflow-hidden">
         <Link to={`/product/${product.id}`}>
@@ -29,12 +29,12 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* اطلاعات */}
-      <h3 className="pl-2 text-sm text-gray-700 mt-2 line-clamp-2 font-serif">
+      <h3 className="pl-2 text-sm text-gray-700 dark:text-gray-300 mt-2 line-clamp-2 font-serif">
         {product.name}
       </h3>
 
       <div className="flex justify-between items-center mt-2">
-        <p className="pl-2 text-indigo-600 font-bold mb-3 font-serif">
+        <p className="pl-2 text-indigo-600 dark:text-indigo-400 font-bold mb-3 font-serif">
           ${product.price}
         </p>
       </div>
@@ -43,7 +43,9 @@ const ProductCard = ({ product }) => {
       <div className="px-2 mb-2 font-serif">
         <span
           className={`text-sm font-semibold ${
-            product.stock > 0 ? "text-green-600" : "text-red-600"
+            product.stock > 0
+              ? "text-green-600 dark:text-green-400"
+              : "text-red-600 dark:text-red-400"
           }`}
         >
           {product.stock > 0 ? `Inventory: ${product.stock}` : "Non-existent"}

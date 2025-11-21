@@ -13,10 +13,13 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
 
   if (!user) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-8">
-        <p className="text-gray-700">
-          Please <span className="text-indigo-600 font-semibold">login</span> to
-          write a review.
+      <div className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mt-8">
+        <p className="text-gray-700 dark:text-gray-200">
+          Please{" "}
+          <span className="text-indigo-600 dark:text-indigo-400 font-semibold">
+            login
+          </span>{" "}
+          to write a review.
         </p>
       </div>
     );
@@ -52,15 +55,15 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 mt-8 border border-gray-100">
-      <h3 className="text-xl font-bold mb-4 text-gray-800">
+    <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mt-8 border border-gray-100 dark:border-gray-700">
+      <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
         Write your comment
       </h3>
 
       <form onSubmit={handleSubmit}>
         {/* Rating Stars */}
         <div className="mb-5">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
             Rating
           </label>
           <div className="flex items-center gap-1">
@@ -79,7 +82,7 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
               />
             ))}
             {rating > 0 && (
-              <span className="text-sm text-gray-600 ml-2">
+              <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">
                 {rating} / 5 stars
               </span>
             )}
@@ -88,24 +91,24 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
 
         {/* Comment */}
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
             Your Comment
           </label>
           <textarea
-            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+            className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
             rows="4"
             placeholder="Share your thoughts about this product..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {comment.length} / 500 characters
           </p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+          <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg mb-4">
             <p className="text-sm">⚠️ {error}</p>
           </div>
         )}
@@ -116,8 +119,8 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
           disabled={loading || !comment.trim() || rating === 0}
           className={`w-full py-2 px-4 rounded-lg font-semibold transition ${
             loading || !comment.trim() || rating === 0
-              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-              : "bg-indigo-600 text-white hover:bg-indigo-700"
+              ? "bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 cursor-not-allowed"
+              : "bg-indigo-600 dark:bg-indigo-700 text-white hover:bg-indigo-700 dark:hover:bg-indigo-800"
           }`}
         >
           {loading ? "Submitting..." : "Submit Review"}
