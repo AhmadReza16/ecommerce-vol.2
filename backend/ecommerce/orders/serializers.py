@@ -25,8 +25,13 @@ class CreateOrderSerializer(serializers.Serializer):
     address = serializers.CharField(max_length=255, required=False, allow_blank=True)
     
     def validate_address(self, value):
-        """Validate address format."""
+        """Validate address format if provided."""
+        # اگر آدرس خالی یا وایت‌اسپیس‌فقط است، اجازه بدهید که view استفاده کند
+        if not value or not value.strip():
+            return value
+        
         value = value.strip()
-        if len(value) < 10:
-            raise serializers.ValidationError("Address must be at least 10 characters long.")
+        # فقط اگر ارائه شده، حداقل 5 کاراکتر باشد
+        if len(value) < 5:
+            raise serializers.ValidationError("Address must be at least 5 characters long if provided.")
         return value

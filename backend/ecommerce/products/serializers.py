@@ -53,3 +53,7 @@ class ProductSerializer(serializers.ModelSerializer):
         if backend_url:
             return f"{backend_url}{img_url}"
         return img_url
+
+    def get_average_rating(self, obj):
+        """Return average rating from product's reviews."""
+        return obj.average_rating
