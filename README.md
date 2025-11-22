@@ -106,6 +106,8 @@ Built with ❤️ using React + Django.
 
 <img width="1366" height="643" alt="Screenshot 2025-11-22 at 22-48-58 ecommerce" src="https://github.com/user-attachments/assets/9a14aa26-07a4-49b0-923c-55d166d00281" />
 
+----
+
 <img width="1366" height="643" alt="Screenshot 2025-11-22 at 22-49-08 ecommerce" src="https://github.com/user-attachments/assets/5428767d-9dbf-4006-bfbb-86fef20d76c9" />
 
 ----
