@@ -84,4 +84,30 @@ VITE_API_BASE_URL=http://localhost:8000/api
 Developed by Ahmadreza16
 Built with ❤️ using React + Django.
 
-📸 Preview
+----
+## 📸 Preview
+
+<img width="1349" height="1888" alt="Screenshot 2025-11-22 at 22-47-03 ecommerce" src="https://github.com/user-attachments/assets/5f59c2a7-d2a8-4322-9d62-d391498f0e8a" />
+
+----
+## Dark Mode
+
+<img width="1349" height="1888" alt="Screenshot 2025-11-22 at 22-47-16 ecommerce" src="https://github.com/user-attachments/assets/6c839bdc-00bc-4454-b514-d1c7304e93b5" />
+
+----
+
+<img width="1349" height="1170" alt="Screenshot 2025-11-22 at 22-57-10 ecommerce" src="https://github.com/user-attachments/assets/9f608a2b-1fbf-4441-88e6-91f62dfd4889" />
+
+----
+
+<img width="1349" height="1048" alt="Screenshot 2025-11-22 at 22-47-51 ecommerce" src="https://github.com/user-attachments/assets/076a016b-2670-4f09-9291-14602ab63f51" />
+
+----
+
+<img width="1366" height="643" alt="Screenshot 2025-11-22 at 22-48-58 ecommerce" src="https://github.com/user-attachments/assets/9a14aa26-07a4-49b0-923c-55d166d00281" />
+
+----
+
+<img width="1366" height="643" alt="Screenshot 2025-11-22 at 22-49-08 ecommerce" src="https://github.com/user-attachments/assets/5428767d-9dbf-4006-bfbb-86fef20d76c9" />
+
+----
