@@ -74,17 +74,7 @@ VITE_API_BASE_URL=http://localhost:8000/api
 ✅ Review & Rating System
 ✅ Responsive UI with Tailwind CSS
 
-🧪 Future Improvements
 
-- Integrate a real payment gateway (e.g., Stripe)
-- Admin dashboard for managing orders and products
-- Multi-language support (English / Persian)
-
-🧑‍💻 Author
-Developed by Ahmadreza16
-Built with ❤️ using React + Django.
-
-----
 ## 📸 Preview
 
 <img width="1349" height="1888" alt="Screenshot 2025-11-22 at 22-47-03 ecommerce" src="https://github.com/user-attachments/assets/5f59c2a7-d2a8-4322-9d62-d391498f0e8a" />
@@ -109,5 +99,17 @@ Built with ❤️ using React + Django.
 ----
 
 <img width="1366" height="643" alt="Screenshot 2025-11-22 at 22-49-08 ecommerce" src="https://github.com/user-attachments/assets/5428767d-9dbf-4006-bfbb-86fef20d76c9" />
+
+----
+
+🧪 Future Improvements
+
+- Integrate a real payment gateway (e.g., Stripe)
+- Admin dashboard for managing orders and products
+- Multi-language support (English / Persian)
+
+🧑‍💻 Author
+Developed by Ahmadreza16
+Built with ❤️ using React + Django.
 
 ----
