@@ -11,8 +11,7 @@ class CartView(APIView):
 
     def get(self, request):
         cart, _ = Cart.objects.get_or_create(user=request.user)
-        cart = Cart.objects.prefetch_related("items__product").get(id=cart.id)
-        serializer = CartSerializer(cart, context={"request": request})
+        serializer = CartSerializer(cart)
         return Response(serializer.data)
     
 class AddToCartView(APIView):
@@ -24,28 +23,30 @@ class AddToCartView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-
-        product = serializer.validated_data['product']
+        product_id = serializer.validated_data['product_id']
         quantity = serializer.validated_data['quantity']
+
+        try:
+            product = Product.objects.get(id=product_id, is_active=True)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
 
         cart, _ = Cart.objects.get_or_create(user=request.user)
         item, created = CartItem.objects.get_or_create(cart=cart, product=product)
 
-        new_quantity = quantity if created else item.quantity + quantity
+        # Calculate new quantity
+        new_quantity = item.quantity + quantity if not created else quantity
 
+        # Check if new quantity exceeds stock
         if new_quantity > product.stock:
             return Response(
-                {"error": f"Not enough stock. Available: {product.stock}, Requested: {new_quantity}."},
+                {"error": f"Not enough stock. Available: {product.stock}, Requested: {new_quantity}."}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         item.quantity = new_quantity
         item.save()
-
-        return Response(
-            {"message": "Product added to cart successfully."},
-            status=status.HTTP_200_OK
-        )
+        return Response({"message": "Product added to cart successfully."}, status=status.HTTP_200_OK)
     
 
 
@@ -98,5 +99,5 @@ class UpdateQuantityView(APIView):
         
         item.quantity = quantity
         item.save()
-        item_serializer = CartItemSerializer(item, context={"request": request})
+        item_serializer = CartItemSerializer(item)
         return Response(item_serializer.data, status=status.HTTP_200_OK)

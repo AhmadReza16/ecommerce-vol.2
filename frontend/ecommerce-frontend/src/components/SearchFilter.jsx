@@ -34,7 +34,7 @@ export default function SearchFilter({ onFilterChange }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-wrap gap-2 mb-4 items-center"
+      className="flex flex-wrap gap-2 mb-4 items-center mt-2"
     >
       <input
         type="text"

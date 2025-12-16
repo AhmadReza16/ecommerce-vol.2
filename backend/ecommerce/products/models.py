@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.db.models import Avg
-from django.utils.text import slugify
+
 
 class Category(models.Model):
     name = models.CharField( max_length=50 , unique=True)
@@ -13,11 +12,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
-
-class ActiveProductManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
-
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=200, db_index=True)
@@ -31,11 +25,6 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True, db_index=True)
 
-
-        # managers
-    objects = models.Manager()
-    active = ActiveProductManager()
-    
     class Meta:
         indexes = [
             models.Index(fields=['name', 'is_active']),
@@ -46,11 +35,9 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
     @property
     def average_rating(self):
-        return self.reviews.aggregate(avg=Avg('rating'))['avg'] or 0
+        reviews = self.reviews.all()
+        if reviews.exists():
+            return round(sum(r.rating for r in reviews) / reviews.count(), 1)
+        return 0

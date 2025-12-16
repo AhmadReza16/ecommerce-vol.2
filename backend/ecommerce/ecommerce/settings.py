@@ -63,18 +63,6 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'ecommerce.exceptions.custom_exception_handler',
 }
 
-# Simple JWT Configuration
-from datetime import timedelta
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
 MIDDLEWARE = [
     # corsheaders middleware should be placed as high as possible
     'corsheaders.middleware.CorsMiddleware',

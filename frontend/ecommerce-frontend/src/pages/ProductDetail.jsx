@@ -55,11 +55,9 @@ const ProductDetail = () => {
     return (
       <>
         <Header />
-        <main className="container mx-auto px-6 py-8 dark:bg-gray-900 dark:text-gray-200">
+        <main className="container mx-auto px-6 py-8">
           <div className="text-center">
-            <p className="text-red-600 text-lg dark:text-red-400">
-              {error || "Product not found."}
-            </p>
+            <p className="text-red-600 text-lg">{error || "Product not found."}</p>
           </div>
         </main>
       </>
@@ -69,10 +67,10 @@ const ProductDetail = () => {
   return (
     <>
       <Header />
-      <main className="container mx-auto px-6 py-8 dark:bg-gray-900 dark:text-gray-200">
+      <main className="container mx-auto px-6 py-8">
         <div className="grid md:grid-cols-2 gap-8">
           {/* تصویر محصول */}
-          <div className="group bg-white shadow-md hover:shadow-xl transition rounded-2xl overflow-hidden border border-gray-100 relative dark:bg-gray-800 dark:border-gray-700">
+          <div className="group bg-white shadow-md hover:shadow-xl transition rounded-2xl overflow-hidden border border-gray-100 relative">
             <div className="overflow-hidden">
               <img
                 src={getImageUrl(product.image)}
@@ -89,20 +87,16 @@ const ProductDetail = () => {
           {/* اطلاعات محصول */}
           <div>
             <div className="">
-              <h3 className="text-3xl font-bold mb-3 dark:text-gray-200">
-                {product.name}
-              </h3>
+              <h3 className="text-3xl font-bold mb-3">{product.name}</h3>
             </div>
-            <p className="text-gray-600 mb-4 dark:text-gray-400">
-              {product.description}
-            </p>
-            <p className="text-2xl font-semibold text-indigo-600 mb-4 dark:text-indigo-400">
+            <p className="text-gray-600 mb-4">{product.description}</p>
+            <p className="text-2xl font-semibold text-indigo-600 mb-4">
               {product.price} $
             </p>
 
             <button
               onClick={() => addToCart(product.id, 1)}
-              className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-green-700 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 dark:bg-green-700 dark:hover:bg-green-800"
+              className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-green-700 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

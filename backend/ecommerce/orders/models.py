@@ -11,7 +11,7 @@ class Order(models.Model):
         ('cancelled', 'Cancelled'),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')  # بهتره <= models.PROTECT
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -29,10 +29,9 @@ class Order(models.Model):
         return f"Order #{self.id} by {self.user.username}"
 
     def calculate_total(self):
-        """Recalculate total price based on order items."""
         total = sum(item.total_price for item in self.items.all())
         self.total_price = total
-        self.save(update_fields=['total_price'])
+        self.save()
 
 
 
@@ -42,13 +41,5 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def save(self, *args, **kwargs):
-        """Auto-update total_price if product is available."""
-        if self.product:
-            self.total_price = self.product.price * self.quantity
-        super().save(*args, **kwargs)
-
     def __str__(self):
-        if self.product:
-            return f"{self.product.name} x {self.quantity}"
-        return f"Deleted product x {self.quantity}"
+        return f"{self.product.name} x {self.quantity}"
