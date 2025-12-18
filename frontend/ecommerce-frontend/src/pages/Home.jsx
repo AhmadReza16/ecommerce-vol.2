@@ -9,6 +9,7 @@ import Footer from "../components/Footer";
 import Loader from "../components/Loader";
 import Hreo from "../components/Hero";
 import WhyChooseUs from "../components/WhyChooseUs";
+import Sorting from "../components/Sorting";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -21,6 +22,7 @@ const Home = () => {
     page: parseInt(searchParams.get("page")) || 1,
     category: searchParams.get("category") || "",
     search: searchParams.get("search") || "",
+    ordering: searchParams.get("ordering") || "",
   });
 
   // Keep in sync with backend ProductPagination.page_size
@@ -30,6 +32,7 @@ const Home = () => {
     const params = {};
     if (filters.search) params.search = filters.search;
     if (filters.category) params.category = filters.category;
+    if (filters.ordering) params.ordering = filters.ordering;
     if (filters.page > 1) params.page = filters.page;
     setSearchParams(params);
   }, [filters, setSearchParams]);
@@ -43,6 +46,7 @@ const Home = () => {
         const queryParams = { page: filters.page };
         if (filters.search) queryParams.search = filters.search;
         if (filters.category) queryParams.category = filters.category;
+        if (filters.ordering) queryParams.ordering = filters.ordering;
 
         const res = await productApi.getProducts(queryParams);
         // Handle both paginated and non-paginated responses
@@ -68,6 +72,10 @@ const Home = () => {
 
   const handleFilterChange = (data) => {
     setFilters((prev) => ({ ...prev, ...data, page: 1 }));
+  };
+
+  const handleSortChange = (ordering) => {
+    setFilters((prev) => ({ ...prev, ordering, page: 1 }));
   };
 
   const handlePageChange = (page) => {
@@ -109,6 +117,7 @@ const Home = () => {
         </h1>
         <Hreo />
         <SearchFilter onFilterChange={handleFilterChange} />
+        <Sorting value={filters.ordering} onChange={handleSortChange} />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />

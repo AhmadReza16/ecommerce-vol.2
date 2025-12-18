@@ -41,7 +41,8 @@ class ProductListView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = ProductFilterSet  # Use custom FilterSet
     search_fields = ['name', 'description']
-    ordering_fields = ['price', 'created_at']
+    ordering_fields = ['price', 'created_at', 'average_rating']
+    ordering = ['-created_at']  # Default ordering: newest first
 
     def get_queryset(self):
         return Product.objects.filter(is_active=True).select_related('category', 'seller')
