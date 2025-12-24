@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import AdminGuard from "@/components/AdminGuard";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",
@@ -17,13 +18,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="flex min-h-screen bg-gray-200">
-          <Sidebar />
-          <div className="flex-1">
-            <Header />
-            <main className="p-6">{children}</main>
+        <AdminGuard>
+          <div className="flex min-h-screen bg-gray-200">
+            <Sidebar />
+            <div className="flex-1">
+              <Header />
+              <main className="p-6">{children}</main>
+            </div>
           </div>
-        </div>
+        </AdminGuard>
       </body>
     </html>
   );

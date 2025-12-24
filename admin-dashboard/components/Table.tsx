@@ -1,44 +1,39 @@
 type Column<T> = {
   key: keyof T;
   label: string;
-};
-
-type Props<T> = {
-  columns: Column<T>[];
-  data: T[];
+  render?: (row: T) => React.ReactNode;
 };
 
 export default function Table<T extends { id: number }>({
-  columns,
   data,
-}: Props<T>) {
+  columns,
+}: {
+  data: T[];
+  columns: Column<T>[];
+}) {
   return (
-    <div className="overflow-x-auto bg-white rounded shadow">
-      <table className="min-w-full text-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            {columns.map((col) => (
-              <th
-                key={String(col.key)}
-                className="px-4 py-2 text-left font-medium"
-              >
-                {col.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row) => (
+    <table className="w-full border">
+      <thead>
+        <tr>
+          {columns.map((col) => (
+            <th key={String(col.key)} className="border p-2">
+              {col.label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {Array.isArray(data) &&
+          data.map((row) => (
             <tr key={row.id} className="border-t">
               {columns.map((col) => (
-                <td key={String(col.key)} className="px-4 py-2">
-                  {String(row[col.key])}
+                <td key={String(col.key)} className="p-2">
+                  {col.render ? col.render(row) : String(row[col.key])}
                 </td>
               ))}
             </tr>
           ))}
-        </tbody>
-      </table>
-    </div>
+      </tbody>
+    </table>
   );
 }
