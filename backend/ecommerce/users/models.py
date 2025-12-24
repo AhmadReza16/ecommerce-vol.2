@@ -7,7 +7,9 @@ class Account(AbstractUser):
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
-
+    is_staff = models.BooleanField(default=False)  # تعیین دسترسی ادمین
+    is_active = models.BooleanField(default=True)
+    
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']

@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import RegisterView, ProfileView  , AddressView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .views import RegisterView, ProfileView  , AddressView , AdminTestView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('address/', AddressView.as_view(), name='address-list-create'),
     # در صورت نیاز به مسیر شامل id برای ویرایش/حذف:
     path('address/<int:pk>/', AddressView.as_view(), name='address-detail'),
+    path("admin-test/", AdminTestView.as_view(), name="admin-test"),
 ]

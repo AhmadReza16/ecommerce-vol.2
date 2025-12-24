@@ -8,6 +8,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Account , Address
 from .serializers import RegisterSerializer, UserSerializer , AddressSerializer
 
+from .permissions import IsAdminUser
+
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
@@ -93,3 +95,12 @@ class AddressView(APIView):
         address.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+#for testing admin permission
+class AdminTestView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request):
+        return Response({
+            "message": "Admin access granted"
+        })
