@@ -6,10 +6,23 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Account , Address
-from .serializers import RegisterSerializer, UserSerializer , AddressSerializer
+from .serializers import AdminTokenSerializer, RegisterSerializer, UserSerializer , AddressSerializer
 
 from .permissions import IsAdminUser
+from rest_framework_simplejwt.views import TokenObtainPairView
 
+from rest_framework.generics import ListAPIView
+from rest_framework.filters import SearchFilter
+from django.contrib.auth.models import User
+from .serializers import AdminUserSerializer
+from .permissions import IsAdmin
+from .pagination import AdminPagination
+
+from rest_framework.generics import DestroyAPIView, UpdateAPIView
+from django.contrib.auth.models import User
+from .permissions import IsAdmin
+from rest_framework.response import Response
+from rest_framework import status
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
@@ -96,12 +109,42 @@ class AddressView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-#for testing admin permission
+#  Admin views 
 class AdminUserListView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
-    serializer_class = UserSerializer
-    queryset = Account.objects.all()
-    def get(self, request):
+    serializer_class = AdminUserSerializer
+    queryset = Account.objects.all().order_by('-date_joined')
+    pagination_class = AdminPagination
+    filter_backends = [SearchFilter]
+    search_fields = ['username', 'email']
+
+    
+
+class AdminTokenView(TokenObtainPairView):
+    serializer_class = AdminTokenSerializer
+
+
+
+
+class AdminUserDeleteView(DestroyAPIView):
+    queryset = User.objects.all()
+    permission_classes = [IsAdmin]
+
+class AdminUserToggleView(UpdateAPIView):
+    queryset = User.objects.all()
+    permission_classes = [IsAdmin]
+
+    def patch(self, request, *args, **kwargs):
+        user = self.get_object()
+
+        field = request.data.get('field')
+        if field not in ['is_active', 'is_staff']:
+            return Response({'error': 'Invalid field'}, status=400)
+
+        setattr(user, field, not getattr(user, field))
+        user.save()
+
         return Response({
-            "message": "Admin access granted"
+            'id': user.id,
+            field: getattr(user, field)
         })

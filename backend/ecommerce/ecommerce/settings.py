@@ -63,6 +63,14 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'ecommerce.exceptions.custom_exception_handler',
 }
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
 MIDDLEWARE = [
     # corsheaders middleware should be placed as high as possible
     'corsheaders.middleware.CorsMiddleware',
