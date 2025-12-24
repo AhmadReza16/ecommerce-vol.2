@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, ProfileView  , AddressView , AdminTestView
+from .views import RegisterView, ProfileView  , AddressView , AdminUserListView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
 
 urlpatterns = [
@@ -10,5 +10,5 @@ urlpatterns = [
     path('address/', AddressView.as_view(), name='address-list-create'),
     # در صورت نیاز به مسیر شامل id برای ویرایش/حذف:
     path('address/<int:pk>/', AddressView.as_view(), name='address-detail'),
-    path("admin-test/", AdminTestView.as_view(), name="admin-test"),
+    path('admin/users/', AdminUserListView.as_view(), name='admin-user-list'),
 ]

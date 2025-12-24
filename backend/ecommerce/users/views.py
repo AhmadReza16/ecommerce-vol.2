@@ -97,9 +97,10 @@ class AddressView(APIView):
 
 
 #for testing admin permission
-class AdminTestView(APIView):
+class AdminUserListView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
-
+    serializer_class = UserSerializer
+    queryset = Account.objects.all()
     def get(self, request):
         return Response({
             "message": "Admin access granted"

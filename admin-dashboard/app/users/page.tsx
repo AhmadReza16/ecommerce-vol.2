@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api";
 import Table from "@/components/Table";
 
 type User = {
@@ -7,12 +8,15 @@ type User = {
   is_staff: boolean;
 };
 
-const users: User[] = [
-  { id: 1, username: "admin", email: "admin@test.com", is_staff: true },
-  { id: 2, username: "user1", email: "user@test.com", is_staff: false },
-];
+export default async function UsersPage() {
+  let users: User[] = [];
 
-export default function UsersPage() {
+  try {
+    users = await apiFetch<User[]>("/users/");
+  } catch (error) {
+    return <div className="text-red-600">Failed to load users</div>;
+  }
+
   return (
     <div>
       <h1 className="text-xl font-semibold mb-4">Users</h1>

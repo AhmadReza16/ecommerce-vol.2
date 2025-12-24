@@ -1,32 +1,29 @@
 import Link from "next/link";
 
+const navItems = [
+  { label: "Dashboard", href: "/admin" },
+  { label: "Users", href: "/admin/users" },
+  { label: "Products", href: "/admin/products" },
+  { label: "Orders", href: "/admin/orders" },
+];
+
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-white border-r">
-      <div className="p-6 font-bold text-xl">Admin</div>
+    <aside className="w-64 bg-slate-900 text-white min-h-screen">
+      <div className="p-6 text-xl font-bold border-b border-slate-700">
+        Admin Panel
+      </div>
 
-      <nav className="px-4 space-y-2">
-        <Link href="/admin" className="block p-2 rounded hover:bg-gray-100">
-          Dashboard
-        </Link>
-        <Link
-          href="/admin/users"
-          className="block p-2 rounded hover:bg-gray-100"
-        >
-          Users
-        </Link>
-        <Link
-          href="/admin/products"
-          className="block p-2 rounded hover:bg-gray-100"
-        >
-          Products
-        </Link>
-        <Link
-          href="/admin/orders"
-          className="block p-2 rounded hover:bg-gray-100"
-        >
-          Orders
-        </Link>
+      <nav className="p-4 space-y-2">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="block rounded px-3 py-2 hover:bg-slate-700 transition"
+          >
+            {item.label}
+          </Link>
+        ))}
       </nav>
     </aside>
   );

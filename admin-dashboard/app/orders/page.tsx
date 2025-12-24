@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api";
 import Table from "@/components/Table";
 
 type Order = {
@@ -7,12 +8,15 @@ type Order = {
   status: string;
 };
 
-const orders: Order[] = [
-  { id: 1, user: "admin", total: 2000, status: "Paid" },
-  { id: 2, user: "user1", total: 800, status: "Pending" },
-];
+export default async function OrdersPage() {
+  let orders: Order[] = [];
 
-export default function OrdersPage() {
+  try {
+    orders = await apiFetch<Order[]>("/orders/");
+  } catch {
+    return <div className="text-red-600">Failed to load orders</div>;
+  }
+
   return (
     <div>
       <h1 className="text-xl font-semibold mb-4">Orders</h1>

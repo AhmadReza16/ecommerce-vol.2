@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api";
 import Table from "@/components/Table";
 
 type Product = {
@@ -7,12 +8,15 @@ type Product = {
   stock: number;
 };
 
-const products: Product[] = [
-  { id: 1, name: "Laptop", price: 1200, stock: 5 },
-  { id: 2, name: "Phone", price: 800, stock: 12 },
-];
+export default async function ProductsPage() {
+  let products: Product[] = [];
 
-export default function ProductsPage() {
+  try {
+    products = await apiFetch<Product[]>("/products/");
+  } catch {
+    return <div className="text-red-600">Failed to load products</div>;
+  }
+
   return (
     <div>
       <h1 className="text-xl font-semibold mb-4">Products</h1>
