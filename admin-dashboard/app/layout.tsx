@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
+
+import { ToastProvider } from "@/context/ToastContext";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import AdminGuard from "@/components/AdminGuard";
@@ -18,15 +20,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AdminGuard>
-          <div className="flex min-h-screen bg-gray-200">
-            <Sidebar />
-            <div className="flex-1">
-              <Header />
-              <main className="p-6">{children}</main>
+        <ToastProvider>
+          <AdminGuard>
+            <div className="flex min-h-screen bg-gray-200">
+              <Sidebar />
+              <div className="flex-1">
+                <Header />
+                <main className="p-6">{children}</main>
+              </div>
             </div>
-          </div>
-        </AdminGuard>
+          </AdminGuard>
+        </ToastProvider>
       </body>
     </html>
   );

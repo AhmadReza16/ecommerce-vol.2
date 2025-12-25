@@ -3,13 +3,18 @@ import { deleteUser, toggleUserField } from "@/services/users";
 import { useEffect, useState } from "react";
 import { getUsers } from "@/services/users";
 import Table from "@/components/Table";
+import ConfirmModal from "@/components/ConfirmModal";
+import { useToast } from "@/context/ToastContext";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
-
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
   useEffect(() => {
     getUsers(page, search).then((data) => {
       setUsers(data.results);
@@ -18,6 +23,22 @@ export default function UsersPage() {
   }, [page, search]);
 
   const totalPages = Math.ceil(count / 10);
+  const handleDelete = async () => {
+    if (!selectedUser) return;
+
+    setLoading(true);
+    try {
+      await deleteUser(selectedUser.id);
+      setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
+      showToast("User deleted successfully", "success");
+      setOpen(false);
+    } catch (error) {
+      showToast("Failed to delete user", "error");
+    } finally {
+      setLoading(false);
+      setSelectedUser(null);
+    }
+  };
 
   return (
     <div>
@@ -33,7 +54,21 @@ export default function UsersPage() {
           setSearch(e.target.value);
         }}
       />
+      {/* Confirm Delete Modal */}
 
+      <ConfirmModal
+        open={open}
+        title="Delete user"
+        description={`Are you sure you want to delete ${selectedUser?.username}?`}
+        confirmText="Delete"
+        loading={loading}
+        onConfirm={handleDelete}
+        onClose={() => {
+          setOpen(false);
+          setSelectedUser(null);
+        }}
+      />
+      {/* Users Table */}
       <Table
         data={users}
         columns={[
@@ -46,10 +81,15 @@ export default function UsersPage() {
             render: (user) => (
               <button
                 onClick={async () => {
-                  const res = await toggleUserField(user.id, "is_active");
-                  setUsers((prev) =>
-                    prev.map((u) => (u.id === user.id ? { ...u, ...res } : u))
-                  );
+                  try {
+                    const res = await toggleUserField(user.id, "is_active");
+                    setUsers((prev) =>
+                      prev.map((u) => (u.id === user.id ? { ...u, ...res } : u))
+                    );
+                    showToast("User status updated", "success");
+                  } catch {
+                    showToast("Action failed", "error");
+                  }
                 }}
               >
                 {user.is_active ? "Yes" : "No"}
@@ -63,10 +103,15 @@ export default function UsersPage() {
             render: (user) => (
               <button
                 onClick={async () => {
-                  const res = await toggleUserField(user.id, "is_staff");
-                  setUsers((prev) =>
-                    prev.map((u) => (u.id === user.id ? { ...u, ...res } : u))
-                  );
+                  try {
+                    const res = await toggleUserField(user.id, "is_active");
+                    setUsers((prev) =>
+                      prev.map((u) => (u.id === user.id ? { ...u, ...res } : u))
+                    );
+                    showToast("User status updated", "success");
+                  } catch {
+                    showToast("Action failed", "error");
+                  }
                 }}
               >
                 {user.is_staff ? "Yes" : "No"}
@@ -80,11 +125,9 @@ export default function UsersPage() {
             render: (user) => (
               <button
                 className="text-red-500"
-                onClick={async () => {
-                  if (confirm("Delete this user?")) {
-                    await deleteUser(user.id);
-                    setUsers((prev) => prev.filter((u) => u.id !== user.id));
-                  }
+                onClick={() => {
+                  setSelectedUser(user);
+                  setOpen(true);
                 }}
               >
                 Delete
