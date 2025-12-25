@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { ToastProvider } from "@/context/ToastContext";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
-import AdminGuard from "@/components/AdminGuard";
+import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
+import AdminGuard from "@/components/layout/AdminGuard";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",

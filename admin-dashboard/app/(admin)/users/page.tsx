@@ -2,8 +2,8 @@
 import { deleteUser, toggleUserField } from "@/services/users";
 import { useEffect, useState } from "react";
 import { getUsers } from "@/services/users";
-import Table from "@/components/Table";
-import ConfirmModal from "@/components/ConfirmModal";
+import Table from "@/components/table/Table";
+import ConfirmModal from "@/components/modal/ConfirmModal";
 import { useToast } from "@/context/ToastContext";
 
 export default function UsersPage() {

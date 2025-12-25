@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import Table from "@/components/Table";
+import Table from "@/components/table/Table";
 
 type Order = {
   id: number;
