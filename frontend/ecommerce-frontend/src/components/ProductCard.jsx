@@ -11,7 +11,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group bg-white shadow-md hover:shadow-xl transition rounded-2xl overflow-hidden border border-gray-100 relative dark:bg-gray-900">
+    <div className="group bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 relative">
       {/* تصویر محصول */}
       <div className="overflow-hidden">
         <Link to={`/product/${product.id}`}>
@@ -29,20 +29,38 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* اطلاعات */}
-      <h3 className="pl-2 text-sm text-gray-700 mt-2 line-clamp-2 font-serif dark:text-white">
+      <h3 className="pl-2 text-sm text-gray-700 dark:text-gray-300 mt-2 line-clamp-2 font-serif">
         {product.name}
       </h3>
 
       <div className="flex justify-between items-center mt-2">
-        <p className="pl-2 text-indigo-600 font-bold mb-3 font-serif dark:text-indigo-700">
+        <p className="pl-2 text-indigo-600 dark:text-indigo-400 font-bold mb-3 font-serif">
           ${product.price}
         </p>
+      </div>
+
+      {/* نمایش موجودی */}
+      <div className="px-2 mb-2 font-serif">
+        <span
+          className={`text-sm font-semibold ${
+            product.stock > 0
+              ? "text-green-600 dark:text-green-400"
+              : "text-red-600 dark:text-red-400"
+          }`}
+        >
+          {product.stock > 0 ? `Inventory: ${product.stock}` : "Non-existent"}
+        </span>
       </div>
 
       {/* دکمه */}
       <button
         onClick={handleAdd}
-        className="font-serif w-full flex items-center justify-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-green-800 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+        disabled={product.stock === 0}
+        className={`font-serif w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold shadow-md transition-all duration-300 ${
+          product.stock > 0
+            ? "bg-green-700 text-white hover:bg-green-800 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
+            : "bg-gray-400 text-white cursor-not-allowed opacity-60"
+        }`}
       >
         {" "}
         <svg
@@ -59,7 +77,7 @@ const ProductCard = ({ product }) => {
             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.293 2.293A1 1 0 007 17h10a1 1 0 00.894-.553L21 9M7 13V6h14"
           />
         </svg>
-        Add to Cart
+        {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
       </button>
     </div>
   );
