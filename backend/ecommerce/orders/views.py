@@ -95,3 +95,40 @@ class OrderDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).select_related('user').prefetch_related('items__product')
+
+
+# Admin Views for Admin Dashboard
+class AdminOrderListView(generics.ListAPIView):
+    """Admin endpoint to view all orders"""
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        """Return all orders for admin"""
+        return Order.objects.select_related('user').prefetch_related('items__product').order_by('-created_at')
+
+
+class AdminOrderDetailView(generics.RetrieveAPIView):
+    """Admin endpoint to view individual order details"""
+    serializer_class = OrderSerializer
+    queryset = Order.objects.select_related('user').prefetch_related('items__product')
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class AdminOrderStatusUpdateView(generics.UpdateAPIView):
+    """Admin endpoint to update order status"""
+    queryset = Order.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        order = self.get_object()
+        status_value = request.data.get('status')
+        
+        if status_value not in ['pending', 'processing', 'shipped', 'delivered', 'cancelled']:
+            return Response({'error': 'Invalid status'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        order.status = status_value
+        order.save()
+        
+        order_serializer = OrderSerializer(order, context={"request": request})
+        return Response(order_serializer.data)

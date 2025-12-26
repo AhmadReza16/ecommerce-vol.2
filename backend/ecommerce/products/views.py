@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions, filters, pagination
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import FilterSet, CharFilter , NumberFilter, BooleanFilter
 from .models import Product, Category
@@ -105,3 +106,45 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         # Prevent changing seller via update
         serializer.save(seller=serializer.instance.seller)
+
+
+# Admin Views for Admin Dashboard
+class AdminProductListView(generics.ListCreateAPIView):
+    """Admin endpoint to manage all products"""
+    serializer_class = ProductSerializer
+    pagination_class = ProductPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = ProductFilterSet
+    search_fields = ['name', 'description']
+    ordering_fields = ['price', 'created_at', 'average_rating']
+    ordering = ['-created_at']
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        """Get all products for admin (including inactive)"""
+        return Product.objects.select_related('category', 'seller').all()
+
+    def perform_create(self, serializer):
+        serializer.save(seller=self.request.user)
+
+
+class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """Admin endpoint to manage individual products"""
+    serializer_class = ProductSerializer
+    queryset = Product.objects.select_related('category', 'seller')
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        serializer.save(seller=serializer.instance.seller)
+
+
+class AdminProductToggleActiveView(generics.UpdateAPIView):
+    """Admin endpoint to toggle product active status"""
+    queryset = Product.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        product = self.get_object()
+        product.is_active = not product.is_active
+        product.save()
+        return Response({'id': product.id, 'is_active': product.is_active})

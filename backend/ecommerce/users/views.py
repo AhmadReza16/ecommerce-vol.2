@@ -108,15 +108,14 @@ class AddressView(APIView):
 
 
 #  Admin views 
-class AdminUserListView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
+class AdminUserListView(generics.ListAPIView):
+    """Admin endpoint to view all users"""
     serializer_class = AdminUserSerializer
     queryset = Account.objects.all().order_by('-date_joined')
     pagination_class = AdminPagination
     filter_backends = [SearchFilter]
     search_fields = ['username', 'email']
-
-    
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
 class AdminTokenView(TokenObtainPairView):
     serializer_class = AdminTokenSerializer
@@ -129,20 +128,34 @@ class AdminUserDeleteView(DestroyAPIView):
     permission_classes = [IsAdminUser]
 
 class AdminUserToggleView(UpdateAPIView):
+    """Toggle user is_active status"""
     queryset = Account.objects.all()
     permission_classes = [IsAdminUser]
 
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
-
-        field = request.data.get('field')
-        if field not in ['is_active', 'is_staff']:
-            return Response({'error': 'Invalid field'}, status=400)
-
-        setattr(user, field, not getattr(user, field))
+        user.is_active = not user.is_active
         user.save()
 
         return Response({
             'id': user.id,
-            field: getattr(user, field)
+            'is_active': user.is_active,
+            'is_staff': user.is_staff
+        })
+
+
+class AdminUserToggleStaffView(UpdateAPIView):
+    """Toggle user is_staff status"""
+    queryset = Account.objects.all()
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_staff = not user.is_staff
+        user.save()
+
+        return Response({
+            'id': user.id,
+            'is_active': user.is_active,
+            'is_staff': user.is_staff
         })

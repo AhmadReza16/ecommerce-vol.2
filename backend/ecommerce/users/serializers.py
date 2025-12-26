@@ -65,6 +65,7 @@ class AddressSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 class AdminUserSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Account
         fields = ['id', 'username', 'email', 'is_staff', 'is_active', 'date_joined']
