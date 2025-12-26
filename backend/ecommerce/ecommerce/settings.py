@@ -52,6 +52,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 AUTH_USER_MODEL = 'users.Account'
 USERNAME_FIELD = 'email'
 
+# Simple JWT Configuration
+from datetime import timedelta
+
 
 
 REST_FRAMEWORK = {
@@ -66,8 +69,11 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 

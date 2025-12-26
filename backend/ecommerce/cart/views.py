@@ -9,9 +9,11 @@ from products.models import Product
 class CartView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    
     def get(self, request):
         cart, _ = Cart.objects.get_or_create(user=request.user)
-        serializer = CartSerializer(cart)
+        cart = Cart.objects.prefetch_related("items__product").get(id=cart.id)
+        serializer = CartSerializer(cart, context={"request": request})
         return Response(serializer.data)
     
 class AddToCartView(APIView):

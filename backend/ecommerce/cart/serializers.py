@@ -10,12 +10,15 @@ class CartItemSerializer(serializers.ModelSerializer):
         source='product',
         write_only=True
     )
+    total = serializers.SerializerMethodField()
 
     class Meta:
         model = CartItem
         fields = ['id', 'product', 'product_id', 'quantity', 'total']
         read_only_fields = ['total']
 
+    def get_total(self, obj):
+        return obj.total()
 
 class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)
@@ -56,7 +59,8 @@ class AddToCartSerializer(serializers.Serializer):
                 )
         except Product.DoesNotExist:
             raise serializers.ValidationError("Product not found.")
-        
+        # Attach resolved product instance for views
+        attrs['product'] = product
         return attrs
 
 

@@ -41,5 +41,13 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def save(self, *args, **kwargs):
+        """Auto-update total_price if product is available."""
+        if self.product:
+            self.total_price = self.product.price * self.quantity
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.product.name} x {self.quantity}"
+        if self.product:
+            return f"{self.product.name} x {self.quantity}"
+        return f"Deleted product x {self.quantity}"

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AdminUserDeleteView, AdminUserToggleView, RegisterView, ProfileView  , AddressView , AdminUserListView , AdminTokenView , 
+from .views import  AdminUserDeleteView, AdminUserToggleView, RegisterView, ProfileView  , AddressView , AdminUserListView , AdminTokenView  
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
 
 urlpatterns = [

@@ -1,4 +1,6 @@
 import uuid
+from django.db import transaction
+
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,7 +15,7 @@ class CreatePaymentView(APIView):
         user = request.user
 
         try:
-            order = Order.objects.prefetch_related('items__product').get(id=order_id, user=user)
+            order = Order.objects.select_for_update().prefetch_related('items__product').get(id=order_id, user=user)
         except Order.DoesNotExist:
             return Response({"error": "Order not found."}, status=404)
 
@@ -38,7 +40,32 @@ class CreatePaymentView(APIView):
                 },
                 status=400
             )
+        
+        # Use atomic transaction to ensure data safety
+        with transaction.atomic():
 
+            # Simulate successful payment
+            transaction_id = str(uuid.uuid4())
+
+            payment = Payment.objects.create(
+                user=user,
+                order=order,
+                amount=order.total_price,
+                status='success',
+                transaction_id=transaction_id
+            )
+
+            # Decrease product stock after successful payment
+            for item in order.items.all():
+                item.product.stock -= item.quantity
+                item.product.save()
+
+            # Change order status to paid
+            order.status = 'paid'
+            order.save()
+
+            serializer = PaymentSerializer(payment)
+            return Response(serializer.data, status=201)
         # Simulate successful payment
         transaction_id = str(uuid.uuid4())
 

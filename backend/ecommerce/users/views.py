@@ -15,12 +15,10 @@ from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter
 from django.contrib.auth.models import User
 from .serializers import AdminUserSerializer
-from .permissions import IsAdmin
 from .pagination import AdminPagination
 
 from rest_framework.generics import DestroyAPIView, UpdateAPIView
 from django.contrib.auth.models import User
-from .permissions import IsAdmin
 from rest_framework.response import Response
 from rest_framework import status
 class RegisterView(APIView):
@@ -127,12 +125,12 @@ class AdminTokenView(TokenObtainPairView):
 
 
 class AdminUserDeleteView(DestroyAPIView):
-    queryset = User.objects.all()
-    permission_classes = [IsAdmin]
+    queryset = Account.objects.all()
+    permission_classes = [IsAdminUser]
 
 class AdminUserToggleView(UpdateAPIView):
-    queryset = User.objects.all()
-    permission_classes = [IsAdmin]
+    queryset = Account.objects.all()
+    permission_classes = [IsAdminUser]
 
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
