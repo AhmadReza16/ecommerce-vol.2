@@ -74,6 +74,7 @@ class AdminTokenSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
+
         if not self.user.is_staff:
             raise AuthenticationFailed('Admin access only')
 
@@ -81,6 +82,14 @@ class AdminTokenSerializer(TokenObtainPairSerializer):
             'id': self.user.id,
             'username': self.user.username,
             'is_staff': self.user.is_staff
+            
         }
 
         return data
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['is_staff'] = user.is_staff
+        token['is_superuser'] = user.is_superuser
+        return token
