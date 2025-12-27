@@ -1,164 +1,176 @@
 "use client";
-import { deleteUser, toggleUserField } from "@/services/users";
+
 import { useEffect, useState } from "react";
-import { getUsers } from "@/services/users";
+
 import Table from "@/components/table/Table";
-import ConfirmModal from "@/components/modal/ConfirmModal";
-import { useToast } from "@/context/ToastContext";
+import Pagination from "@/components/table/Pagination";
+import SearchInput from "@/components/table/SearchInput";
+import Loader from "@/components/feedback/Loader";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+
+import { usersService } from "@/services/users.service";
+import { User } from "@/types/user";
+import { useConfirm } from "@/hooks/useConfirm";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [count, setCount] = useState(0);
+  const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
-  const [open, setOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const { showToast } = useToast();
+
+  const { confirm } = useConfirm();
+  const pageSize = 10;
+
   useEffect(() => {
-    getUsers(page, search).then((data) => {
-      setUsers(data.results);
-      setCount(data.count);
-    });
+    fetchUsers();
   }, [page, search]);
 
-  const totalPages = Math.ceil(count / 10);
-  const handleDelete = async () => {
-    if (!selectedUser) return;
-
-    setLoading(true);
+  const fetchUsers = async () => {
     try {
-      await deleteUser(selectedUser.id);
-      setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
-      showToast("User deleted successfully", "success");
-      setOpen(false);
-    } catch (error) {
-      showToast("Failed to delete user", "error");
+      setLoading(true);
+      const res = await usersService.getUsers({ page, search });
+      setUsers(res.results);
+      setTotal(res.count);
+    } catch (err) {
+      console.error("Error retrieving users");
     } finally {
       setLoading(false);
-      setSelectedUser(null);
     }
   };
 
+  const handleToggleActive = async (user: User) => {
+    try {
+      await usersService.toggleActive(user.id);
+
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === user.id ? { ...u, is_active: !u.is_active } : u
+        )
+      );
+    } catch {
+      console.error("Error changing user status");
+    }
+  };
+
+  const handleToggleStaff = async (user: User) => {
+    try {
+      await usersService.toggleStaff(user.id);
+
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === user.id ? { ...u, is_staff: !u.is_staff } : u
+        )
+      );
+    } catch {
+      console.error("Error changing user role");
+    }
+  };
+
+  const handleDelete = async (user: User) => {
+    const ok = await confirm({
+      title: "Delete user",
+      message: `Are you sure you want to delete ${user.username}?`,
+      confirmText: "delete",
+    });
+
+    if (!ok) return;
+
+    try {
+      await usersService.deleteUser(user.id);
+      setUsers((prev) => prev.filter((u) => u.id !== user.id));
+    } catch {
+      console.error("Error deleting user");
+    }
+  };
+
+  const columns: Array<{
+    key: string;
+    label: string;
+    render?: (value: any, row?: any) => React.ReactNode;
+  }> = [
+    { key: "username", label: "Username" },
+    { key: "email", label: "email" },
+    {
+      key: "is_active",
+      label: "وضعیت",
+      render: (value: boolean) =>
+        value ? (
+          <Badge color="green">Active</Badge>
+        ) : (
+          <Badge color="red">Inactive</Badge>
+        ),
+    },
+    {
+      key: "is_staff",
+      label: "Role",
+      render: (value: boolean) =>
+        value ? (
+          <Badge color="blue">admin</Badge>
+        ) : (
+          <Badge color="gray">user</Badge>
+        ),
+    },
+    {
+      key: "actions",
+      label: "Operation",
+      render: (_: any, row: User) => (
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => handleToggleActive(row)}
+          >
+            {row.is_active ? "Inactive" : "Active"}
+          </Button>
+
+          <Button
+            size="sm"
+            variant="warning"
+            onClick={() => handleToggleStaff(row)}
+          >
+            {row.is_staff ? "user" : "admin"}
+          </Button>
+
+          <Button size="sm" variant="danger" onClick={() => handleDelete(row)}>
+            delet
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div>
-      <h1 className="text-xl font-bold mb-4">Users</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold">کاربران</h1>
 
-      {/* Search */}
-      <input
-        className="border p-2 mb-4 w-64"
-        placeholder="Search username or email"
-        value={search}
-        onChange={(e) => {
-          setPage(1);
-          setSearch(e.target.value);
-        }}
-      />
-      {/* Confirm Delete Modal */}
-
-      <ConfirmModal
-        open={open}
-        title="Delete user"
-        description={`Are you sure you want to delete ${selectedUser?.username}?`}
-        confirmText="Delete"
-        loading={loading}
-        onConfirm={handleDelete}
-        onClose={() => {
-          setOpen(false);
-          setSelectedUser(null);
-        }}
-      />
-      {/* Users Table */}
-      <Table
-        data={users}
-        columns={[
-          { key: "username", label: "Username" },
-          { key: "email", label: "Email" },
-
-          {
-            key: "is_active",
-            label: "Active",
-            render: (user) => (
-              <button
-                onClick={async () => {
-                  try {
-                    const res = await toggleUserField(user.id, "is_active");
-                    setUsers((prev) =>
-                      prev.map((u) => (u.id === user.id ? { ...u, ...res } : u))
-                    );
-                    showToast("User status updated", "success");
-                  } catch {
-                    showToast("Action failed", "error");
-                  }
-                }}
-              >
-                {user.is_active ? "Yes" : "No"}
-              </button>
-            ),
-          },
-
-          {
-            key: "is_staff",
-            label: "Admin",
-            render: (user) => (
-              <button
-                onClick={async () => {
-                  try {
-                    const res = await toggleUserField(user.id, "is_active");
-                    setUsers((prev) =>
-                      prev.map((u) => (u.id === user.id ? { ...u, ...res } : u))
-                    );
-                    showToast("User status updated", "success");
-                  } catch {
-                    showToast("Action failed", "error");
-                  }
-                }}
-              >
-                {user.is_staff ? "Yes" : "No"}
-              </button>
-            ),
-          },
-
-          {
-            key: "id",
-            label: "Actions",
-            render: (user) => (
-              <button
-                className="text-red-500"
-                onClick={() => {
-                  setSelectedUser(user);
-                  setOpen(true);
-                }}
-              >
-                Delete
-              </button>
-            ),
-          },
-        ]}
-      />
-
-      {/* Pagination */}
-      <div className="flex gap-2 mt-4">
-        <button
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-          className="border px-3 py-1 disabled:opacity-50"
-        >
-          Prev
-        </button>
-
-        <span>
-          Page {page} of {totalPages}
-        </span>
-
-        <button
-          disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
-          className="border px-3 py-1 disabled:opacity-50"
-        >
-          Next
-        </button>
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Search by username or email..."
+        />
       </div>
+
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <Table
+            columns={columns as any}
+            data={users}
+            keyExtractor={(item: User) => item.id}
+          />
+
+          <Pagination
+            currentPage={page}
+            totalItems={total}
+            pageSize={pageSize}
+            onPageChange={setPage}
+          />
+        </>
+      )}
     </div>
   );
 }

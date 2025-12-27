@@ -1,41 +1,43 @@
+"use client";
+
 import { useState } from "react";
 
 interface ConfirmOptions {
   title?: string;
+  message?: string;
   description?: string;
   confirmText?: string;
+  cancelText?: string;
 }
 
 export const useConfirm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState<ConfirmOptions>({});
-  const [onConfirm, setOnConfirm] = useState<(() => void) | null>(null);
+  const [resolvePromise, setResolvePromise] = useState<((value: boolean) => void) | null>(null);
 
-  const openConfirm = (
-    callback: () => void,
-    opts?: ConfirmOptions
-  ) => {
-    setOptions(opts || {});
-    setOnConfirm(() => callback);
-    setIsOpen(true);
+  const confirm = async (opts?: ConfirmOptions): Promise<boolean> => {
+    return new Promise((resolve) => {
+      setOptions(opts || {});
+      setResolvePromise(() => resolve);
+      setIsOpen(true);
+    });
   };
 
-  const closeConfirm = () => {
+  const handleConfirm = () => {
+    if (resolvePromise) resolvePromise(true);
     setIsOpen(false);
-    setOptions({});
-    setOnConfirm(null);
   };
 
-  const confirm = () => {
-    if (onConfirm) onConfirm();
-    closeConfirm();
+  const handleCancel = () => {
+    if (resolvePromise) resolvePromise(false);
+    setIsOpen(false);
   };
 
   return {
     isOpen,
     options,
-    openConfirm,
-    closeConfirm,
     confirm,
+    handleConfirm,
+    handleCancel,
   };
 };
