@@ -7,30 +7,30 @@ export interface ProductsQuery {
 
 export const productsService = {
   getProducts(params: ProductsQuery) {
-    return api.get("/admin/products/", { params });
+    return api.get("/products/admin/", { params }).then(res => res.data);
   },
 
   getProduct(id: number) {
-    return api.get(`/admin/products/${id}/`);
+    return api.get(`/products/admin/${id}/`);
   },
 
   createProduct(data: FormData) {
-    return api.post("/admin/products/", data, {
+    return api.post("/products/admin/", data, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
 
   updateProduct(id: number, data: FormData) {
-    return api.put(`/admin/products/${id}/`, data, {
+    return api.put(`/products/admin/${id}/`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
 
   deleteProduct(id: number) {
-    return api.delete(`/admin/products/${id}/`);
+    return api.delete(`/products/admin/${id}/`);
   },
 
   toggleActive(id: number) {
-    return api.patch(`/admin/products/${id}/toggle-active/`);
+    return api.patch(`/products/admin/${id}/toggle-active/`);
   },
 };
