@@ -63,33 +63,3 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = ["id", "city", "postal_code", "address_line"]
         read_only_fields = ["id"]
-
-class AdminUserSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Account
-        fields = ['id', 'username', 'email', 'is_staff', 'is_active', 'date_joined']
-
-class AdminTokenSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-
-
-        if not self.user.is_staff:
-            raise AuthenticationFailed('Admin access only')
-
-        data['user'] = {
-            'id': self.user.id,
-            'username': self.user.username,
-            'is_staff': self.user.is_staff
-            
-        }
-
-        return data
-
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['is_staff'] = user.is_staff
-        token['is_superuser'] = user.is_superuser
-        return token
