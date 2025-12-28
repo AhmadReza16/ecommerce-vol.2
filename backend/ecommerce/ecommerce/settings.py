@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'cart',
     'payment',
     'reviews',
+    'admin',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
