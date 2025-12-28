@@ -1,4 +1,4 @@
-import api from './api';
+import { api } from './api';
 
 export const getUsers = async (page = 1, search = '') => {
   const res = await api.get('/api/admin/users/', {
@@ -12,7 +12,7 @@ export const getUsers = async (page = 1, search = '') => {
 };
 
 export const deleteUser = async (id: number) => {
-  await api.delete(`/api/admin/users/${id}/delete/`);
+  await api.delete(`/api/admin/${id}/delete/`);
 };
 
 export const toggleUserField = async (
