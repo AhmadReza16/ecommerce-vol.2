@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'cart',
     'payment',
     'reviews',
-    'admin',
+    'adminpanel',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -52,7 +52,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 AUTH_USER_MODEL = 'users.Account'
 USERNAME_FIELD = 'email'
-
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 # Simple JWT Configuration
 from datetime import timedelta
 
