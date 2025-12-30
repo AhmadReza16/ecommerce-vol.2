@@ -22,7 +22,7 @@ const authApi = axios.create({
 export const authService = {
   async login(data: LoginPayload): Promise<LoginResponse> {
     try {
-      const res = await authApi.post("/admin/login/", data);
+      const res = await authApi.post("/adminpanel/admin/login/", data);
       setTokens(res.data.access, res.data.refresh);
       return res.data;
     } catch (error: any) {
