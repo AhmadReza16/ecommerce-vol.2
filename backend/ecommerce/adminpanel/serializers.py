@@ -19,15 +19,15 @@ class AdminTokenSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-
         if not self.user.is_staff:
             raise AuthenticationFailed('Admin access only')
 
+        data['email'] = self.user.email
         data['user'] = {
             'id': self.user.id,
             'username': self.user.username,
+            'email': self.user.email,
             'is_staff': self.user.is_staff
-            
         }
 
         return data
