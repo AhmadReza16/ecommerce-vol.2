@@ -10,7 +10,7 @@ from rest_framework.exceptions import AuthenticationFailed
 class RegisterSerializer(serializers.ModelSerializer):          # Serializer مبتنی بر مدل برای ثبت‌نام کاربر 
     email = serializers.EmailField(
         required=True,
-        validators=[UniqueValidator(queryset=Account.objects.all())] #چک می‌کند ایمیل تکراری نباشد 
+        validators=[UniqueValidator(queryset=Account.objects.all())]
     )
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
@@ -57,6 +57,11 @@ class UserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
 
+class AdminUserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Account
+        fields = ['id', 'username', 'email', 'is_staff', 'is_active', 'date_joined']
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:

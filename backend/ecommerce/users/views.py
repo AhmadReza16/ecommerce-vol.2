@@ -1,14 +1,18 @@
-from rest_framework import status
+from django.shortcuts import render
+
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.views import APIView
+from rest_framework.filters import SearchFilter
+from rest_framework.generics import DestroyAPIView, UpdateAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Account , Address
-from .serializers import  RegisterSerializer, UserSerializer , AddressSerializer
-
-from rest_framework.response import Response
-from rest_framework import status
+from .models import Account, Address
+from .serializers import RegisterSerializer, UserSerializer, AddressSerializer, AdminUserSerializer
+from .permissions import IsAdminUser
+from .pagination import AdminPagination
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -94,3 +98,53 @@ class AddressView(APIView):
 
         address.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+#  Admin views 
+class AdminUserListView(generics.ListAPIView):
+    """Admin endpoint to view all users from users app"""
+    serializer_class = AdminUserSerializer
+    queryset = Account.objects.all().order_by('-date_joined')
+    pagination_class = AdminPagination
+    filter_backends = [SearchFilter]
+    search_fields = ['username', 'email']
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+
+class AdminUserDeleteView(DestroyAPIView):
+    queryset = Account.objects.all()
+    permission_classes = [IsAdminUser]
+
+class AdminUserToggleView(UpdateAPIView):
+    """Toggle user is_active status"""
+    queryset = Account.objects.all()
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_active = not user.is_active
+        user.save()
+
+        return Response({
+            'id': user.id,
+            'is_active': user.is_active,
+            'is_staff': user.is_staff
+        })
+
+
+class AdminUserToggleStaffView(UpdateAPIView):
+    """Toggle user is_staff status"""
+    queryset = Account.objects.all()
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_staff = not user.is_staff
+        user.save()
+
+        return Response({
+            'id': user.id,
+            'is_active': user.is_active,
+            'is_staff': user.is_staff
+        })
+
