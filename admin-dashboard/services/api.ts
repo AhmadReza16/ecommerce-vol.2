@@ -7,7 +7,7 @@ import {
   isTokenExpired,
 } from "@/utils/token";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -50,7 +50,7 @@ api.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          `${API_BASE_URL}/admin/token/refresh/`,
+          `${API_BASE_URL}/adminpanel/admin/token/refresh/`,
           { refresh }
         );
 

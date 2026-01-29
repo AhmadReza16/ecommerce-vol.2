@@ -7,18 +7,18 @@ export interface UsersQuery {
 
 export const usersService = {
   getUsers(params: UsersQuery) {
-    return api.get("/users/", { params }).then(res => res.data);
+    return api.get("/users/admin/", { params }).then(res => res.data);
   },
 
   deleteUser(userId: number) {
-    return api.delete(`/users/${userId}/delete/`);
+    return api.delete(`/users/admin/${userId}/delete/`);
   },
 
   toggleActive(userId: number) {
-    return api.patch(`/users/${userId}/toggle/`);
+    return api.patch(`/users/admin/${userId}/toggle/`);
   },
 
   toggleStaff(userId: number) {
-    return api.patch(`/users/${userId}/toggle-staff/`);
+    return api.patch(`/users/admin/${userId}/toggle-staff/`);
   },
 };
