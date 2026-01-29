@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { ToastProvider } from "@/context/ToastContext";
-
 import AdminGuard from "@/components/layout/AdminGuard";
 
 export const metadata: Metadata = {
@@ -18,7 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ToastProvider>
+          <AdminGuard>{children}</AdminGuard>
+        </ToastProvider>
+      </body>
     </html>
   );
 }
