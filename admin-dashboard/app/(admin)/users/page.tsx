@@ -46,8 +46,8 @@ export default function UsersPage() {
 
       setUsers((prev) =>
         prev.map((u) =>
-          u.id === user.id ? { ...u, is_active: !u.is_active } : u
-        )
+          u.id === user.id ? { ...u, is_active: !u.is_active } : u,
+        ),
       );
     } catch {
       console.error("Error changing user status");
@@ -60,8 +60,8 @@ export default function UsersPage() {
 
       setUsers((prev) =>
         prev.map((u) =>
-          u.id === user.id ? { ...u, is_staff: !u.is_staff } : u
-        )
+          u.id === user.id ? { ...u, is_staff: !u.is_staff } : u,
+        ),
       );
     } catch {
       console.error("Error changing user role");
@@ -90,11 +90,23 @@ export default function UsersPage() {
     label: string;
     render?: (value: any, row?: any) => React.ReactNode;
   }> = [
+    { key: "id", label: "ID" },
     { key: "username", label: "Username" },
-    { key: "email", label: "email" },
+    { key: "email", label: "Email" },
+    {
+      key: "last_login",
+      label: "Last Login",
+      render: (value: string | null) =>
+        value ? new Date(value).toLocaleDateString() : "Never",
+    },
+    {
+      key: "date_joined",
+      label: "Joined",
+      render: (value: string) => new Date(value).toLocaleDateString(),
+    },
     {
       key: "is_active",
-      label: "وضعیت",
+      label: "Status",
       render: (value: boolean) =>
         value ? (
           <Badge color="green">Active</Badge>
@@ -107,9 +119,9 @@ export default function UsersPage() {
       label: "Role",
       render: (value: boolean) =>
         value ? (
-          <Badge color="blue">admin</Badge>
+          <Badge color="blue">Admin</Badge>
         ) : (
-          <Badge color="gray">user</Badge>
+          <Badge color="gray">User</Badge>
         ),
     },
     {
@@ -134,7 +146,7 @@ export default function UsersPage() {
           </Button>
 
           <Button size="sm" variant="danger" onClick={() => handleDelete(row)}>
-            delet
+            delete
           </Button>
         </div>
       ),
@@ -144,7 +156,7 @@ export default function UsersPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">کاربران</h1>
+        <h1 className="text-xl font-semibold">users</h1>
 
         <SearchInput
           value={search}
