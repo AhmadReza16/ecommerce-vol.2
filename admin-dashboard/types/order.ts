@@ -1,5 +1,4 @@
 
-
 export type OrderStatus =
   | "pending"
   | "paid"
@@ -7,24 +6,44 @@ export type OrderStatus =
   | "delivered"
   | "cancelled";
 
+export interface ProductInOrder {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  image: string | null;
+  slug?: string;
+  is_active: boolean;
+  seller?: string;
+  seller_id?: number;
+  average_rating?: number;
+  category?: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface OrderItem {
   id: number;
-  product_name: string;
+  product: ProductInOrder | null;
   quantity: number;
-  price: string;
+  total_price: string;
 }
 
 export interface Order {
   id: number;
-  user: number;
-  user_email: string;
-
+  user: string;
+  user_email?: string;
   status: OrderStatus;
+  status_display?: string;
   total_price: string;
-
+  address?: string;
   created_at: string;
-  updated_at: string;
-
+  updated_at?: string;
   items: OrderItem[];
 }
 

@@ -1,16 +1,25 @@
 
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 export interface Product {
   id: number;
   name: string;
-  title?: string;
-
+  slug?: string;
+  description: string;
+  price: number;
+  stock: number;
+  category?: Category;
   image: string | null;
-  image_url: string | null;
-
   is_active: boolean;
-
-  created_at: string;
-  updated_at: string;
+  seller?: string;
+  seller_id?: number;
+  average_rating?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ProductsResponse {
