@@ -15,7 +15,6 @@ class ProductSerializer(serializers.ModelSerializer):
     )
     seller = serializers.StringRelatedField(read_only=True)
     seller_id = serializers.IntegerField(source='seller.id', read_only=True)
-    image = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
 
     class Meta:
@@ -28,30 +27,33 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'slug', 'seller', 'seller_id', 'average_rating', 'created_at', 'updated_at']
 
+    def to_representation(self, instance):
+        """Override representation to get full image URL"""
+        ret = super().to_representation(instance)
+        # Replace image field with full URL
+        if instance.image:
+            request = self.context.get('request')
+            try:
+                img_url = instance.image.url
+            except Exception:
+                img_url = getattr(instance.image, 'name', None)
+                if not img_url:
+                    ret['image'] = None
+                    return ret
+                if not img_url.startswith('/'):
+                    img_url = '/' + img_url
 
-
-    def get_image(self, obj):
-        """Return full absolute URL for product image (if present)."""
-        if not obj.image:
-            return None
-        request = self.context.get('request')
-        try:
-            img_url = obj.image.url
-        except Exception:
-            # fallback to name-based URL
-            img_url = getattr(obj.image, 'name', None)
-            if not img_url:
-                return None
-            if not img_url.startswith('/'):
-                img_url = '/' + img_url
-
-        if request:
-            return request.build_absolute_uri(img_url)
-        # fallback to settings if no request in context (e.g., celery tasks)
-        backend_url = getattr(settings, 'BACKEND_URL', None)
-        if backend_url:
-            return f"{backend_url}{img_url}"
-        return img_url
+            if request:
+                ret['image'] = request.build_absolute_uri(img_url)
+            else:
+                backend_url = getattr(settings, 'BACKEND_URL', None)
+                if backend_url:
+                    ret['image'] = f"{backend_url}{img_url}"
+                else:
+                    ret['image'] = img_url
+        else:
+            ret['image'] = None
+        return ret
 
     def get_average_rating(self, obj):
         """Return average rating from product's reviews."""

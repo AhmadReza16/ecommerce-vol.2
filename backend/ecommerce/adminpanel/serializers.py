@@ -37,4 +37,5 @@ class AdminTokenSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['is_staff'] = user.is_staff
         token['is_superuser'] = user.is_superuser
+        token['username'] = user.username
         return token
