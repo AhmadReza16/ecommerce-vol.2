@@ -11,12 +11,12 @@ export default function Header() {
 
       <div className="flex items-center gap-4">
         <span className="text-sm text-gray-600">
-          {user?.user_id ? `Admin #${user.user_id}` : "Admin"}
+          {user?.username ? `${user.username}` : "Admin"}
         </span>
 
         <button
           onClick={logout}
-          className="text-sm text-red-600 hover:underline"
+          className="px-3 py-1 text-sm  border rounded  text-red-600 hover:bg-red-50"
         >
           Logout
         </button>
