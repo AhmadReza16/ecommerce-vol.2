@@ -33,4 +33,8 @@ export const productsService = {
   toggleActive(id: number) {
     return api.patch(`/products/admin/${id}/toggle-active/`);
   },
+
+  getCategories() {
+    return api.get("/products/categories/").then(res => res.data);
+  },
 };

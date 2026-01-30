@@ -7,6 +7,7 @@ export interface DecodedToken {
   exp: number;
   iat: number;
   user_id: number;
+  username?: string;
   is_staff?: boolean;
   is_superuser?: boolean;
 }
