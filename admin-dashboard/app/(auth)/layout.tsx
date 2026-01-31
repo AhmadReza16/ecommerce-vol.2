@@ -11,11 +11,5 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body>
-        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-      </body>
-    </html>
-  );
+  return <Suspense>{children}</Suspense>;
 }
