@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const ADMIN_PREFIX = '/admin';
+const ADMIN_PREFIX = '/';
 const LOGIN_PATH = '/login';
 const AUTH_ROUTES = ['/login'];
 
