@@ -1,6 +1,7 @@
 # 🛍️ Full-Stack E-commerce Website
 
-A complete **E-commerce web application** built with **React (Frontend)** and **Django REST Framework (Backend)**.  
+A complete **E-commerce web application** built with **React (Frontend)** and **Django REST Framework (Backend)**
+**Next.js TypeScript (Admin-Dashboard)**.  
 This project demonstrates a modern, scalable structure for building real-world online stores with authentication, payments, and reviews.
 
 ---
@@ -29,6 +30,14 @@ This project demonstrates a modern, scalable structure for building real-world o
 - Axios for API requests
 - Tailwind CSS for styling
 - Lucide-react icons
+
+### 💻 Admin-Dashboard (Next.js + Tailwind)
+
+- Next.js 16
+- TypeScript
+- Management ==> users ,products ,orders
+- Axios for API requests
+- Tailwind CSS for styling
 
 ---
 
@@ -63,6 +72,25 @@ CORS_ALLOWED_ORIGINS=http://localhost:5173
 
 React (.env)
 VITE_API_BASE_URL=http://localhost:8000/api
+
+### Admin-Dashboard
+
+cd admin-dashboard
+npm install
+npm run dev
+
+🔑 Environment Variables
+Django (.env)
+
+SECRET_KEY=your_secret_key
+DEBUG=True
+DATABASE_URL=sqlite:///db.sqlite3
+CORS_ALLOWED_ORIGINS=http://localhost:5173
+
+React (.env)
+VITE_API_BASE_URL=http://localhost:8000/api
+
+---
 
 🧰 Features
 
